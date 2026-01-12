@@ -53,17 +53,19 @@
 
 ## 主题安装
 
+请前往 [Releases](https://github.com/ty-yqs/wordpress-theme-Lumivra/releases) 页面下载最新版本主题
+
 ### 方法一：通过 WordPress 后台安装（推荐）
 
 1. **下载主题文件**
-   - 获取 `lumivra.zip` 文件
+   - 获取 `wordpress-theme-Lumivra.zip` 文件
 
 2. **上传主题**
    - 登录 WordPress 后台
    - 导航到 **外观 > 主题**
    - 点击 **添加新主题**
    - 点击 **上传主题** 按钮
-   - 选择 `lumivra.zip` 文件
+   - 选择 `wordpress-theme-Lumivra.zip` 文件
    - 点击 **立即安装**
 
 3. **启用主题**
@@ -73,13 +75,13 @@
 ### 方法二：通过 FTP 安装
 
 1. **解压主题文件**
-   - 解压 `lumivra.zip` 文件
-   - 得到 `lumivra` 文件夹
+   - 解压 `wordpress-theme-Lumivra.zip` 文件
+   - 得到 `wordpress-theme-Lumivra` 文件夹
 
 2. **上传到服务器**
    - 使用 FTP 客户端（如 FileZilla）连接服务器
    - 导航到 `/wp-content/themes/` 目录
-   - 上传整个 `lumivra` 文件夹
+   - 上传整个 `wordpress-theme-Lumivra` 文件夹
 
 3. **启用主题**
    - 登录 WordPress 后台
@@ -92,10 +94,10 @@
 
 ```bash
 # 上传主题到服务器后
-wp theme activate lumivra
+wp theme activate wordpress-theme-Lumivra
 
 # 或直接从 zip 文件安装
-wp theme install /path/to/lumivra.zip --activate
+wp theme install /path/to/wordpress-theme-Lumivra.zip --activate
 ```
 
 ---
@@ -139,8 +141,6 @@ Lumivra 提供两种配置方式：
 - ✅ 传统表单，简单易懂
 - ✅ 所有设置集中在一个页面
 - ✅ 即时保存，无需预览
-
-详细使用说明：[后台设置页面指南](ADMIN-GUIDE.md)
 
 #### 方式 B：主题自定义器
 
@@ -1130,15 +1130,3 @@ add_action('widgets_init', 'lumivra_child_widgets_init');
 如果您在使用过程中有任何问题或建议，欢迎联系我们。
 
 祝您使用愉快！ ✨
-
----
-
-**文档版本**：1.0.0  
-**最后更新**：2026-01-12  
-**适用主题版本**：Lumivra 1.0.0
-
-**相关文档**：
-- [README.md](README.md) - 主题概览
-- [ADMIN-GUIDE.md](ADMIN-GUIDE.md) - 后台设置指南
-- [INSTALL.md](INSTALL.md) - 快速安装指南
-- [CHANGELOG.md](CHANGELOG.md) - 更新日志
