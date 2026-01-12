@@ -10,7 +10,8 @@
 
 **Lumivra** 是一个干净、现代、富有设计感的 WordPress 主题。专为追求极简美学和优雅排版的内容创作者、博客作者和企业网站打造。主题名称源自 "Lumi"（光）和 "Vibrant"（充满活力），希望为您的主页带来光明和活力。
 
-📄 使用文档：https://yanqs.me/lumivra
+🏠 主题主页：https://lumivra.yanqs.me/
+📄 使用文档：https://lumivra.yanqs.me/doc/
 
 ### 主题特色
 
@@ -72,7 +73,7 @@
 #### 方式一：后台设置页面（推荐）
 - 位置：**外观 > Lumivra 设置**
 - 优点：传统表单界面，简单直观，集中管理
-- 详细说明：[使用指南](https://yanqs.me/lumivra)
+- 详细说明：[使用指南](https://lumivra.yanqs.me/doc/)
 
 #### 方式二：主题自定义器
 - 位置：**外观 > 自定义**
@@ -209,9 +210,10 @@ Lumivra 主题采用 [GPL v2 或更高版本](http://www.gnu.org/licenses/gpl-2.
 
 感谢 WordPress 社区的所有贡献者。
 
-## 联系方式
+## 相关链接
 
-- 主题主页：https://yanqs.me/lumivra
+- 主题主页：https://lumivra.yanqs.me/
+- 使用文档：https://lumivra.yanqs.me/doc/
 - 作者主页：https://yanqs.me
 
 ---

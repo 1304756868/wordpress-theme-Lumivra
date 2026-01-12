@@ -437,3 +437,19 @@ function lumivra_login_logo_url_title() {
     return get_bloginfo('name');
 }
 add_filter('login_headertext', 'lumivra_login_logo_url_title');
+
+/**
+ * 自定义首页文档标题为 “站点标题｜站点副标题”。
+ */
+function lumivra_custom_home_title($title) {
+    if (is_front_page() || is_home()) {
+        $site_name = get_bloginfo('name');
+        $site_desc = trim(get_bloginfo('description'));
+        if (!empty($site_desc)) {
+            return $site_name . '｜' . $site_desc;
+        }
+        return $site_name;
+    }
+    return $title;
+}
+add_filter('pre_get_document_title', 'lumivra_custom_home_title', 10, 1);
