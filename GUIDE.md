@@ -909,16 +909,11 @@ A: 这是响应式设计的正常表现。如需调整：
 
 如果以上方法都无法解决您的问题：
 
-1. **查看文档**
-   - README.md
-   - ADMIN-GUIDE.md
-   - CHANGELOG.md
-
-2. **检查 WordPress 官方资源**
+1. **检查 WordPress 官方资源**
    - [WordPress 支持论坛](https://wordpress.org/support/)
    - [WordPress Codex](https://codex.wordpress.org/)
 
-3. **联系技术支持**
+2. **联系技术支持**
    - 提供详细的错误描述
    - 附上截图
    - 说明已尝试的解决方法
@@ -937,58 +932,12 @@ A: 这是响应式设计的正常表现。如需调整：
 
 ## 进阶技巧
 
-### 创建子主题
-
-如果您需要自定义主题代码，建议使用子主题：
-
-#### 创建子主题步骤
-
-1. **创建子主题目录**
-   ```
-   /wp-content/themes/lumivra-child/
-   ```
-
-2. **创建 style.css**
-   ```css
-   /*
-   Theme Name: Lumivra Child
-   Template: lumivra
-   */
-   
-   /* 您的自定义样式 */
-   ```
-
-3. **创建 functions.php**
-   ```php
-   <?php
-   function lumivra_child_enqueue_styles() {
-       wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
-   }
-   add_action('wp_enqueue_scripts', 'lumivra_child_enqueue_styles');
-   ```
-
-4. **启用子主题**
-   - 访问 **外观 > 主题**
-   - 启用 Lumivra Child
-
-#### 子主题优势
-
-- ✅ 更新父主题不影响自定义
-- ✅ 安全修改主题代码
-- ✅ 便于维护和管理
-
 ### 自定义 CSS
-
-#### 方法一：使用自定义器
 
 1. 访问 **外观 > 自定义 > 额外 CSS**
 2. 添加您的 CSS 代码
 3. 实时预览效果
 4. 点击 **发布**
-
-#### 方法二：使用子主题
-
-在子主题的 style.css 中添加自定义样式。
 
 #### 常用自定义示例
 
