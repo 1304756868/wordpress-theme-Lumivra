@@ -441,7 +441,7 @@ function lumivra_settings_page() {
                         关于 Lumivra
                     </h3>
                     <p><strong>版本：</strong> 1.0.0</p>
-                    <p><strong>作者：</strong> Lumivra Team</p>
+                    <p><strong>作者：</strong> YanQS</p>
                     <p class="description">Lumivra 是一个干净、现代、富有设计感的 WordPress 主题。</p>
                 </div>
 
@@ -465,7 +465,7 @@ function lumivra_settings_page() {
                     </h3>
                     <p>查看我们的文档以获取详细的使用说明。</p>
                     <p>
-                        <a href="https://yanqs.me/Lumivra" class="button button-secondary" target="_blank">查看文档</a>
+                        <a href="https://lumivra.yanqs.me/doc" class="button button-secondary" target="_blank">查看文档</a>
                     </p>
                 </div>
 

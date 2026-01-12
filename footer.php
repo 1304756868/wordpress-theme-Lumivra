@@ -47,8 +47,7 @@
                     ?>
                 </p>
                 <p class="powered-by">
-                    <?php printf(__('Powered by %s', 'lumivra'), '<a href="https://wordpress.org/">WordPress</a>'); ?>
-                    <?php printf(__(' | Theme: %s', 'lumivra'), '<a href="#">Lumivra</a>'); ?>
+                    <?php printf(__('Theme by %s', 'lumivra'), '<a href="https://lumivra.yanqs.me" rel="noopener noreferrer" target="_blank">Lumivra</a>'); ?>
                 </p>
             </div>
         </div>

@@ -1,6 +1,6 @@
 /*
 Theme Name: Lumivra
-Theme URI: https://yanqs.me/lumivra
+Theme URI: https://lumivra.yanqs.me
 Author: YanQS
 Author URI: https://yanqs.me
 Description: Lumivra - 一个干净、现代、富有设计感的 WordPress 主题。专为追求极简美学和优雅排版的用户打造。
@@ -1071,3 +1071,38 @@ img {
 .mb-0 { margin-bottom: 0; }
 .mt-4 { margin-top: 2rem; }
 .hidden { display: none; }
+
+/* Powered-by (footer) icon and text */
+.site-info .powered-by {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+    line-height: 1;
+}
+
+.site-info .powered-by .wp-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.site-info .powered-by .wp-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    opacity: 0.85;
+}
+
+.site-info .powered-by a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.site-info .powered-by a:hover {
+    text-decoration: underline;
+    color: #ffffff;
+}
