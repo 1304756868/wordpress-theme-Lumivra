@@ -3,7 +3,7 @@
  * Lumivra 主题功能文件
  *
  * @package Lumivra
- * @since v1.1.0
+ * @since 1.1.0
  */
 
 if (!defined('ABSPATH')) {
@@ -218,13 +218,13 @@ add_action('after_switch_theme', 'lumivra_setup_default_widgets');
  */
 function lumivra_scripts() {
     // 主样式表
-    wp_enqueue_style('lumivra-style', get_stylesheet_uri(), array(), 'v1.1.0');
+    wp_enqueue_style('lumivra-style', get_stylesheet_uri(), array(), '1.1.0');
     
     // 响应式样式
-    wp_enqueue_style('lumivra-responsive', get_template_directory_uri() . '/responsive.css', array('lumivra-style'), 'v1.1.0');
+    wp_enqueue_style('lumivra-responsive', get_template_directory_uri() . '/responsive.css', array('lumivra-style'), '1.1.0');
 
     // 主 JavaScript 文件
-    wp_enqueue_script('lumivra-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), 'v1.1.0', true);
+    wp_enqueue_script('lumivra-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.1.0', true);
 
     // 将主题目录 URL 传给 JS，便于引用主题内资源（如加载占位图）
     wp_localize_script('lumivra-script', 'lumivra', array(
