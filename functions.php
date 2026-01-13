@@ -247,13 +247,9 @@ function lumivra_get_random_default_thumbnail_url() {
     $uri_base = get_template_directory_uri() . '/assets/png/random/';
     $dir = get_template_directory() . '/assets/png/random/';
 
-    if (!is_dir($dir)) {
-        return $uri_base . 'default-1.svg';
-    }
-
     $files = glob($dir . '*.{png,jpg,jpeg,svg}', GLOB_BRACE);
     if (empty($files)) {
-        return $uri_base . 'default-1.svg';
+        return $uri_base . 'default.svg';
     }
 
     $file = $files[array_rand($files)];

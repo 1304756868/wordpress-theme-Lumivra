@@ -209,6 +209,33 @@ function lumivra_settings_init() {
         array('field' => 'show_back_to_top', 'label' => '显示"返回顶部"按钮')
     );
 
+    add_settings_field(
+        'miit_beian',
+        '工信部备案号',
+        'lumivra_text_field_render',
+        'lumivra_settings',
+        'lumivra_footer_section',
+        array('field' => 'miit_beian', 'placeholder' => '例如：浙ICP备12345678号')
+    );
+
+    add_settings_field(
+        'police_beian',
+        '公安备案号',
+        'lumivra_text_field_render',
+        'lumivra_settings',
+        'lumivra_footer_section',
+        array('field' => 'police_beian', 'placeholder' => '例如：浙公网安备33010002000123号')
+    );
+
+    add_settings_field(
+        'police_beian_url',
+        '公安备案跳转链接',
+        'lumivra_url_field_render',
+        'lumivra_settings',
+        'lumivra_footer_section',
+        array('field' => 'police_beian_url', 'placeholder' => 'https://beian.mps.gov.cn/#/query/webSearch?code=123456789')
+    );
+
     // ========================================
     // 社交媒体设置
     // ========================================
@@ -397,6 +424,17 @@ function lumivra_validate_options($input) {
         $output['copyright_text'] = sanitize_text_field($input['copyright_text']);
     }
     $output['show_back_to_top'] = isset($input['show_back_to_top']) ? '1' : '0';
+
+    // 验证备案信息
+    if (isset($input['miit_beian'])) {
+        $output['miit_beian'] = sanitize_text_field($input['miit_beian']);
+    }
+    if (isset($input['police_beian'])) {
+        $output['police_beian'] = sanitize_text_field($input['police_beian']);
+    }
+    if (isset($input['police_beian_url'])) {
+        $output['police_beian_url'] = esc_url_raw($input['police_beian_url']);
+    }
 
     // 验证社交媒体链接
     $social_networks = array('weibo', 'wechat', 'douban', 'zhihu', 'github', 'twitter', 'facebook', 'instagram');

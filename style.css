@@ -1132,9 +1132,40 @@ body.lightbox-open {
 
 .site-info {
     text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem 0;
     color: rgba(255, 255, 255, 0.7);
+}
+
+.site-info .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    min-height: 80px; /* 减少高度，因为没有border-top了 */
+}
+
+.site-info .container p {
+    margin: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.site-info .beian-info {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.site-info .beian-info a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.site-info .beian-info a:hover {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: underline;
 }
 
 /* ============================================
