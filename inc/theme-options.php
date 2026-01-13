@@ -342,6 +342,6 @@ add_action('wp_head', 'lumivra_customize_css');
  * 自定义预览 JS
  */
 function lumivra_customize_preview_js() {
-    wp_enqueue_script('lumivra-customizer', get_template_directory_uri() . '/assets/js/customizer.js', array('customize-preview'), '1.0.0', true);
+    wp_enqueue_script('lumivra-customizer', get_template_directory_uri() . '/assets/js/customizer.js', array('customize-preview'), 'v1.1.0', true);
 }
 add_action('customize_preview_init', 'lumivra_customize_preview_js');

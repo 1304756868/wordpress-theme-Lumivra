@@ -478,7 +478,7 @@ function lumivra_settings_page() {
                         <span class="dashicons dashicons-info"></span>
                         关于 Lumivra
                     </h3>
-                    <p><strong>版本：</strong> 1.0.0</p>
+                    <p><strong>版本：</strong> v1.1.0</p>
                     <p><strong>作者：</strong> YanQS</p>
                     <p class="description">Lumivra 是一个干净、现代、富有设计感的 WordPress 主题。</p>
                 </div>
