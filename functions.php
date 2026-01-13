@@ -224,7 +224,7 @@ function lumivra_scripts() {
     wp_enqueue_style('lumivra-responsive', get_template_directory_uri() . '/responsive.css', array('lumivra-style'), '1.0.0');
 
     // 主 JavaScript 文件
-    wp_enqueue_script('lumivra-script', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
+    wp_enqueue_script('lumivra-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.0.0', true);
 
     // 将主题目录 URL 传给 JS，便于引用主题内资源（如加载占位图）
     wp_localize_script('lumivra-script', 'lumivra', array(
