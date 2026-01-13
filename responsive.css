@@ -32,7 +32,7 @@
     }
 
     .container {
-        padding: 0 1rem;
+        padding: 0 1.5rem; /* 增加左右安全距离 */
     }
 
     /* 移动端侧边栏堆叠显示 */

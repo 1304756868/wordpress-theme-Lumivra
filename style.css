@@ -92,7 +92,7 @@ a:hover {
     color: var(--secondary-color);
 }
 
-img {
+img, video, canvas, audio, iframe, embed, object {
     max-width: 100%;
     height: auto;
     display: block;
@@ -565,16 +565,106 @@ body.page .post-thumbnail {
     line-height: 1.8;
     max-width: 800px;
     margin: 0 auto;
+    /* 确保长内容不会溢出 */
+    overflow-wrap: break-word;
+    word-wrap: break-word; /* IE 兼容 */
+    word-break: break-word; /* 非标准但有用 */
+    hyphens: auto; /* 允许连字符断字 */
 }
 
 .entry-content p {
     margin-bottom: 1.75rem;
 }
 
+/* 文章内链接美化 */
+.entry-content a {
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.3); /* 浅色下划线 */
+    padding-bottom: 1px;
+    transition: all 0.2s ease;
+    word-break: break-all; /* 防止长链接溢出 */
+}
+
+.entry-content a:hover {
+    color: var(--secondary-color);
+    border-bottom-color: var(--secondary-color);
+    background-color: rgba(37, 99, 235, 0.1); /* 悬停时添加淡淡的背景色 */
+    border-radius: 2px;
+}
+
+/* 移除正文中标题的边框（如果有）以及隐藏分隔线 */
+.entry-content h1,
+.entry-content h2,
+.entry-content h3 {
+    border: none;
+    padding-bottom: 0;
+}
+
+.entry-content hr {
+    display: none;
+}
+
 .entry-content img {
     border-radius: var(--border-radius);
     margin: 2rem auto;
     display: block;
+}
+
+/* 列表样式恢复 */
+.entry-content ul,
+.entry-content ol {
+    margin-bottom: 1.75rem;
+    padding-left: 2rem;
+}
+
+.entry-content ul {
+    list-style-type: disc;
+}
+
+.entry-content ol {
+    list-style-type: decimal;
+}
+
+.entry-content li {
+    margin-bottom: 0.5rem;
+}
+
+.entry-content ul ul,
+.entry-content ol ol,
+.entry-content ul ol,
+.entry-content ol ul {
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+}
+
+/* 代码块自动换行 */
+.entry-content pre,
+.wp-block-code {
+    white-space: pre-wrap;       /* CSS3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    overflow-wrap: break-word;   /* 标准属性 */
+    max-width: 100%;             /* 防止溢出容器 */
+    overflow-x: hidden;          /* 既然换行了，就不需要横向滚动 */
+    
+    /* 基础样式，如果还没有定义的话 */
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.entry-content pre code,
+.wp-block-code code {
+    white-space: pre-wrap;       /* 继承换行设置 */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    background: transparent;     /* 避免双重背景 */
+    padding: 0;
 }
 
 /* 图片灯箱（全屏覆盖） */
