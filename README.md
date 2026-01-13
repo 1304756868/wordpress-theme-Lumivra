@@ -4,9 +4,11 @@
 ![PHP](https://img.shields.io/badge/PHP-7.4+-blue)
 ![许可证](https://img.shields.io/badge/许可证-GPL%20v2-orange)
 
-![screenshot.png](screenshot.png)
+![Demo](screenshot.png)
 
 ## 关于 Lumivra
+
+![Lumivra](Lumivra.png)
 
 **Lumivra** 是一个干净、现代、富有设计感的 WordPress 主题。专为追求极简美学和优雅排版的内容创作者、博客作者和企业网站打造。主题名称源自 "Lumi"（光）和 "Vibrant"（充满活力），希望为您的主页带来光明和活力。
 
