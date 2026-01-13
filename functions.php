@@ -288,53 +288,65 @@ function lumivra_pagination() {
 
     $paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
     $max   = intval($wp_query->max_num_pages);
+    $is_mobile = wp_is_mobile();
+
+    // 在移动端减少显示的页码数量
+    $range = $is_mobile ? 1 : 2;
 
     if ($paged >= 1) {
         $links[] = $paged;
     }
 
-    if ($paged >= 3) {
-        $links[] = $paged - 1;
-        $links[] = $paged - 2;
+    if ($paged >= ($range + 1)) {
+        for ($i = $range; $i >= 1; $i--) {
+            $links[] = $paged - $i;
+        }
     }
 
-    if (($paged + 2) <= $max) {
-        $links[] = $paged + 2;
-        $links[] = $paged + 1;
+    if (($paged + $range) <= $max) {
+        for ($i = 1; $i <= $range; $i++) {
+            $links[] = $paged + $i;
+        }
     }
 
-    echo '<div class="pagination"><div class="container">';
+    echo '<div class="pagination' . ($is_mobile ? ' pagination-mobile' : '') . '"><div class="container">';
 
     if (get_previous_posts_link()) {
-        printf('<a href="%s">%s</a>', get_previous_posts_page_link(), __('&laquo; 上一页', 'lumivra'));
+        printf('<a href="%s" class="prev">%s</a>', get_previous_posts_page_link(), __('&laquo; 上一页', 'lumivra'));
     }
 
-    if (!in_array(1, $links)) {
-        $class = 1 == $paged ? ' current' : '';
-        printf('<a href="%s" class="%s">%s</a>', esc_url(get_pagenum_link(1)), $class, '1');
+    if ($is_mobile) {
+        // 移动端只显示当前页码
+        printf('<span class="current-page">%s / %s</span>', $paged, $max);
+    } else {
+        // 桌面端显示完整分页
+        if (!in_array(1, $links)) {
+            $class = 1 == $paged ? ' current' : '';
+            printf('<a href="%s" class="%s">%s</a>', esc_url(get_pagenum_link(1)), $class, '1');
 
-        if (!in_array(2, $links)) {
-            echo '<span>…</span>';
-        }
-    }
-
-    sort($links);
-    foreach ((array) $links as $link) {
-        $class = $paged == $link ? ' current' : '';
-        printf('<a href="%s" class="%s">%s</a>', esc_url(get_pagenum_link($link)), $class, $link);
-    }
-
-    if (!in_array($max, $links)) {
-        if (!in_array($max - 1, $links)) {
-            echo '<span>…</span>';
+            if (!in_array(2, $links)) {
+                echo '<span>…</span>';
+            }
         }
 
-        $class = $paged == $max ? ' current' : '';
-        printf('<a href="%s" class="%s">%s</a>', esc_url(get_pagenum_link($max)), $class, $max);
+        sort($links);
+        foreach ((array) $links as $link) {
+            $class = $paged == $link ? ' current' : '';
+            printf('<a href="%s" class="%s">%s</a>', esc_url(get_pagenum_link($link)), $class, $link);
+        }
+
+        if (!in_array($max, $links)) {
+            if (!in_array($max - 1, $links)) {
+                echo '<span>…</span>';
+            }
+
+            $class = $paged == $max ? ' current' : '';
+            printf('<a href="%s" class="%s">%s</a>', esc_url(get_pagenum_link($max)), $class, $max);
+        }
     }
 
     if (get_next_posts_link()) {
-        printf('<a href="%s">%s</a>', get_next_posts_page_link(), __('下一页 &raquo;', 'lumivra'));
+        printf('<a href="%s" class="next">%s</a>', get_next_posts_page_link(), __('下一页 &raquo;', 'lumivra'));
     }
 
     echo '</div></div>';

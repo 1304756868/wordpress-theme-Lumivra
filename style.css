@@ -1065,11 +1065,74 @@ body.lightbox-open {
     transition: var(--transition);
 }
 
+.pagination .prev,
+.pagination .next {
+    font-weight: 600;
+}
+
 .pagination a:hover,
 .pagination .current {
     background: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
+}
+
+/* ============================================
+   加载更多按钮
+   ============================================ */
+.load-more-container {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+#load-more-posts {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background-color: var(--surface-color);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#load-more-posts:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+}
+
+#load-more-posts:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.load-more-loading {
+    display: none;
+    margin-top: 1rem;
+}
+
+.load-more-loading span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    margin: 0 4px;
+    animation: loadingTabs 1.4s infinite ease-in-out both;
+}
+
+.load-more-loading span:nth-child(1) { animation-delay: -0.32s; }
+.load-more-loading span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes loadingTabs {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
 }
 
 /* ============================================

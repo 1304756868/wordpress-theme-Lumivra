@@ -334,6 +334,76 @@
             }
         }
 
+        // ============================================
+        // 首页点击加载更多
+        // ============================================
+        var $loadMoreBtn = $('#load-more-posts');
+        var $postsContainer = $('.posts-list');
+        var $loadingAnim = $('.load-more-loading');
+
+        if ($loadMoreBtn.length) {
+            $loadMoreBtn.on('click', function(e) {
+                e.preventDefault();
+                var nextPageUrl = $(this).attr('data-next-page');
+                
+                if (!nextPageUrl) return;
+
+                $(this).hide();
+                $loadingAnim.css('display', 'block');
+
+                $.ajax({
+                    url: nextPageUrl,
+                    type: 'GET',
+                    dataType: 'html',
+                    success: function(response) {
+                        var $data = $(response);
+                        var newPosts = $data.find('.posts-list').html();
+                        var newNextLink = $data.find('#load-more-posts').attr('data-next-page');
+
+                        if (newPosts) {
+                            // 简单的淡入效果
+                            var $newContent = $(newPosts).hide();
+                            $postsContainer.append($newContent);
+                            $newContent.fadeIn();
+                            
+                            // 重新初始化某些可能需要的JS行为（如懒加载）
+                            // 如果有专门的函数，可以在这里调用，例如触发scroll事件
+                            $(window).trigger('scroll'); 
+                            
+                            // 更新下一页链接
+                            if (newNextLink) {
+                                $loadMoreBtn.attr('data-next-page', newNextLink);
+                                $loadMoreBtn.show();
+                            } else {
+                                // 没有更多页面了
+                                $loadMoreBtn.remove();
+                                $('.load-more-container').append('<span class="no-more-posts" style="color:var(--text-secondary);">已经到底啦～</span>');
+                            }
+                        } else {
+                            $loadMoreBtn.remove();
+                        }
+
+                        $loadingAnim.hide();
+                    },
+                    error: function(xhr) {
+                        if (xhr.status == 404) {
+                            // 404 表示没有更多内容了
+                            $loadingAnim.hide();
+                            $loadMoreBtn.remove();
+                            // 避免重复添加
+                            if ($('.load-more-container .no-more-posts').length === 0) {
+                                $('.load-more-container').append('<span class="no-more-posts" style="color:var(--text-secondary);">已经到底啦～</span>');
+                            }
+                        } else {
+                            alert('加载失败，请检查网络连接后重试。');
+                            $loadMoreBtn.show();
+                            $loadingAnim.hide();
+                        }
+                    }
+                });
+            });
+        }
+
     }); // document ready 结束
 
     // ============================================

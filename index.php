@@ -78,7 +78,24 @@ get_header();
                     <?php endwhile; ?>
                 </div>
 
-                <?php lumivra_pagination(); ?>
+                <?php 
+                if (is_home() || (is_front_page() && is_home())) {
+                    // 首页显示加载更多
+                    global $wp_query;
+                    if ($wp_query->max_num_pages > 1) {
+                        $next_page_link = get_next_posts_page_link();
+                        if ($next_page_link) {
+                            echo '<div class="load-more-container">';
+                            echo '<button id="load-more-posts" data-next-page="' . esc_url($next_page_link) . '">' . __('点击加载更多', 'lumivra') . '</button>';
+                            echo '<div class="load-more-loading"><span></span><span></span><span></span></div>';
+                            echo '</div>';
+                        }
+                    }
+                } else {
+                    // 其他页面使用常规分页
+                    lumivra_pagination(); 
+                }
+                ?>
 
             <?php else : ?>
 
