@@ -199,24 +199,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 12000;
     cursor: pointer;
 }
 
 .lightbox img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
+    max-width: calc(100vw - 4rem) !important;
+    max-height: calc(100vh - 4rem) !important;
+    object-fit: contain !important;
+    margin: auto !important;
+    position: relative !important;
+    top: auto !important;
 }
 
 .lightbox .close {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
+    position: fixed; /* 固定在视口右上角 */
+    top: 1rem;
+    right: 1rem;
+    z-index: 12001;
     color: white;
-    font-size: 3rem;
+    font-size: 2rem;
     cursor: pointer;
     line-height: 1;
+    background: rgba(0,0,0,0.35);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* 滚动效果 */

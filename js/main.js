@@ -239,35 +239,64 @@
         // ============================================
         $('.entry-content img').on('click', function(e) {
             e.preventDefault();
+            e.stopPropagation();
+            
             // 优先使用懒加载保存的真实资源（data-src / data-srcset），否则回退到当前的 src
             var $orig = $(this);
             var realSrc = $orig.data('src') || $orig.attr('src');
             var realSrcset = $orig.data('srcset') || $orig.attr('srcset');
-            var lightbox = $('<div class="lightbox"></div>');
+            
+            // 创建 lightbox 容器，添加强制定位样式
+            var lightbox = $('<div class="lightbox"></div>').css({
+                'position': 'fixed',
+                'top': '0',
+                'left': '0',
+                'right': '0',
+                'bottom': '0',
+                'z-index': '12000',
+                'display': 'none'
+            });
+            
             var img = $('<img>').attr('src', realSrc).attr('alt', $orig.attr('alt') || '');
             if (realSrcset) img.attr('srcset', realSrcset);
+            
             var close = $('<span class="close" aria-label="关闭">&times;</span>');
 
             lightbox.append(close).append(img);
             $('body').append(lightbox);
+            
             // 锁定页面滚动
             $('body').addClass('lightbox-open');
 
             lightbox.fadeIn(160);
 
-            close.on('click', function() {
+            // 关闭 lightbox 的函数
+            function closeLightbox() {
                 lightbox.fadeOut(160, function() {
                     $(this).remove();
                     $('body').removeClass('lightbox-open');
+                    // 移除键盘事件监听
+                    $(document).off('keydown.lightbox');
                 });
+            }
+
+            // 点击关闭按钮
+            close.on('click', function(e) {
+                e.stopPropagation();
+                closeLightbox();
             });
 
+            // 点击遮罩关闭
             lightbox.on('click', function(e) {
                 if ($(e.target).hasClass('lightbox')) {
-                    $(this).fadeOut(160, function() {
-                        $(this).remove();
-                        $('body').removeClass('lightbox-open');
-                    });
+                    closeLightbox();
+                }
+            });
+
+            // 按 ESC 键关闭
+            $(document).on('keydown.lightbox', function(e) {
+                if (e.key === 'Escape' || e.keyCode === 27) {
+                    closeLightbox();
                 }
             });
         });
