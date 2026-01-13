@@ -26,7 +26,10 @@ function lumivra_setup() {
 
     // 添加额外的图片尺寸（硬裁剪模式确保尺寸一致）
     add_image_size('lumivra-featured', 1200, 600, true);  // 特色图片（横幅）
-    add_image_size('lumivra-thumbnail', 200, 140, true);  // 列表缩略图（10:7比例，长条形）
+    // 调整列表缩略图为更高分辨率以提升移动端清晰度
+    add_image_size('lumivra-thumbnail', 400, 280, true);  // 列表缩略图（改为 400x280，10:7 比例）
+    // 额外更大尺寸供需要更高分辨率设备使用
+    add_image_size('lumivra-thumbnail-lg', 800, 560, true);
 
     // 注册导航菜单
     register_nav_menus(array(
@@ -222,6 +225,11 @@ function lumivra_scripts() {
 
     // 主 JavaScript 文件
     wp_enqueue_script('lumivra-script', get_template_directory_uri() . '/js/main.js', array('jquery'), '1.0.0', true);
+
+    // 将主题目录 URL 传给 JS，便于引用主题内资源（如加载占位图）
+    wp_localize_script('lumivra-script', 'lumivra', array(
+        'themeUrl' => get_template_directory_uri(),
+    ));
 
     // 评论回复脚本
     if (is_singular() && comments_open() && get_option('thread_comments')) {

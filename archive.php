@@ -33,7 +33,7 @@ get_header();
                         ?>
                             <div class="post-thumbnail">
                                 <a href="<?php the_permalink(); ?>">
-                                    <?php the_post_thumbnail('lumivra-thumbnail'); ?>
+                                    <?php echo wp_get_attachment_image( $thumbnail_id, 'lumivra-thumbnail', false, array('sizes' => '(max-width: 768px) 800px, 400px', 'alt' => get_the_title() ) ); ?>
                                 </a>
                             </div>
                         <?php else : ?>

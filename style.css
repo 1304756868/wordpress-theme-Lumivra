@@ -451,6 +451,37 @@ body.page .post-thumbnail {
     display: none !important;
 }
 
+/* 移动端隐藏头像与图片上的交互按钮（增强可读性） */
+@media (max-width: 768px) {
+    /* 用户头像与下拉 */
+    .user-avatar,
+    .user-avatar-wrapper,
+    .user-avatar-link,
+    .user-dropdown {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* 认证/登录按钮、头像占位 */
+    .auth-btn,
+    .user-menu {
+        display: none !important;
+    }
+
+    /* 常见图片内按钮/覆盖（主题可能使用不同类名） */
+    .post-thumbnail .overlay,
+    .post-thumbnail .image-actions,
+    .entry-content .image-actions,
+    .entry-content .wp-block-image .wp-block-image__button,
+    .lightbox .close {
+        display: none !important;
+        pointer-events: none !important;
+    }
+}
+
 .post-thumbnail img {
     width: 100%;
     height: 100%;
@@ -543,6 +574,50 @@ body.page .post-thumbnail {
 .entry-content img {
     border-radius: var(--border-radius);
     margin: 2rem 0;
+}
+
+/* 图片灯箱（全屏覆盖） */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.75);
+    z-index: 12000;
+    padding: 2rem;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    border-radius: 8px;
+    display: block;
+}
+
+.lightbox .close {
+    position: fixed; /* 固定在视口右上角 */
+    top: 1rem;
+    right: 1rem;
+    z-index: 12001;
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(0,0,0,0.35);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 当灯箱打开时禁止页面滚动（不改变 body 定位以避免定位冲突） */
+body.lightbox-open {
+    overflow: hidden !important;
 }
 
 /* ============================================

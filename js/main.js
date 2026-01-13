@@ -90,22 +90,100 @@
         });
 
         // ============================================
-        // 图片延迟加载
+        // 图片懒加载（IntersectionObserver）；占位图使用主题内的 assets/png/load.svg
+        // 逻辑：将 img.src/srcset 储存到 data-*，替换为占位图；进入视口时再加载真实图片。
         // ============================================
-        if ('loading' in HTMLImageElement.prototype) {
-            const images = document.querySelectorAll('img[loading="lazy"]');
-            images.forEach(img => {
-                // 只在有 data-src 时才设置 src
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
+        (function() {
+            var placeholder = (typeof lumivra !== 'undefined' && lumivra.themeUrl) ? lumivra.themeUrl + '/assets/png/load.svg' : '/assets/png/load.svg';
+
+            function prepareImages() {
+                var imgs = document.querySelectorAll('img:not([data-lazy-processed])');
+                imgs.forEach(function(img) {
+                    // 可通过 data-lazy-ignore 跳过某些图片
+                    if (img.hasAttribute('data-lazy-ignore')) return;
+                    // 已经使用 data-src 的不重复处理
+                    if (img.dataset.src) {
+                        img.setAttribute('data-lazy-processed', '1');
+                        return;
+                    }
+
+                    var src = img.getAttribute('src');
+                    if (!src) return;
+
+                    // 保存原始资源
+                    img.dataset.src = img.dataset.src || src;
+                    if (img.hasAttribute('srcset')) img.dataset.srcset = img.getAttribute('srcset');
+
+                    // 设置占位图
+                    try {
+                        img.setAttribute('src', placeholder);
+                    } catch (e) {}
+
+                    // 移除 srcset，避免浏览器提前选择资源
+                    if (img.hasAttribute('srcset')) img.removeAttribute('srcset');
+
+                    img.setAttribute('data-lazy-processed', '1');
+                    img.setAttribute('loading', 'lazy');
+                });
+            }
+
+            function loadImage(img) {
+                if (!img || !img.dataset || !img.dataset.src) return;
+                var realSrc = img.dataset.src;
+                var realSrcset = img.dataset.srcset;
+
+                // 使用新的 Image 对象预加载
+                var tmp = new Image();
+                if (realSrcset) tmp.srcset = realSrcset;
+                tmp.src = realSrc;
+                tmp.onload = function() {
+                    if (realSrcset) img.setAttribute('srcset', realSrcset);
+                    img.setAttribute('src', realSrc);
+                    img.classList.add('is-loaded');
+                    // 清理 data 属性
+                    delete img.dataset.src;
+                    delete img.dataset.srcset;
+                };
+                tmp.onerror = function() {
+                    // 发生错误时保留占位图，不阻塞页面
+                    img.classList.add('is-error');
+                };
+            }
+
+            function initObserver() {
+                if ('IntersectionObserver' in window) {
+                    var io = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            if (entry.isIntersecting) {
+                                var img = entry.target;
+                                io.unobserve(img);
+                                loadImage(img);
+                            }
+                        });
+                    }, { rootMargin: '200px 0px', threshold: 0.01 });
+
+                    document.querySelectorAll('img[data-lazy-processed]').forEach(function(i) {
+                        io.observe(i);
+                    });
+                } else {
+                    // 回退：直接加载所有图片（较早浏览器）
+                    document.querySelectorAll('img[data-lazy-processed]').forEach(function(i) {
+                        loadImage(i);
+                    });
                 }
-            });
-        } else {
-            // 为不支持的浏览器加载 polyfill
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
-            document.body.appendChild(script);
-        }
+            }
+
+            // 初始化
+            prepareImages();
+            initObserver();
+
+            // 如果有动态插入图片（AJAX 或内容变更），可再次调用 prepareImages/ initObserver
+            // 为简单起见，绑定到 window 的一次性暴露方法
+            window.lumivra_lazy_reload = function() {
+                prepareImages();
+                initObserver();
+            };
+        })();
 
         // ============================================
         // 搜索框聚焦效果
@@ -157,29 +235,38 @@
         });
 
         // ============================================
-        // 图片灯箱效果（简单版）
+        // 图片灯箱效果（简单版） - 使用全屏覆盖并锁定页面滚动
         // ============================================
-        $('.entry-content img').on('click', function() {
-            var src = $(this).attr('src');
+        $('.entry-content img').on('click', function(e) {
+            e.preventDefault();
+            // 优先使用懒加载保存的真实资源（data-src / data-srcset），否则回退到当前的 src
+            var $orig = $(this);
+            var realSrc = $orig.data('src') || $orig.attr('src');
+            var realSrcset = $orig.data('srcset') || $orig.attr('srcset');
             var lightbox = $('<div class="lightbox"></div>');
-            var img = $('<img>').attr('src', src);
-            var close = $('<span class="close">&times;</span>');
+            var img = $('<img>').attr('src', realSrc).attr('alt', $orig.attr('alt') || '');
+            if (realSrcset) img.attr('srcset', realSrcset);
+            var close = $('<span class="close" aria-label="关闭">&times;</span>');
 
             lightbox.append(close).append(img);
             $('body').append(lightbox);
+            // 锁定页面滚动
+            $('body').addClass('lightbox-open');
 
-            lightbox.fadeIn();
+            lightbox.fadeIn(160);
 
             close.on('click', function() {
-                lightbox.fadeOut(function() {
+                lightbox.fadeOut(160, function() {
                     $(this).remove();
+                    $('body').removeClass('lightbox-open');
                 });
             });
 
             lightbox.on('click', function(e) {
                 if ($(e.target).hasClass('lightbox')) {
-                    $(this).fadeOut(function() {
+                    $(this).fadeOut(160, function() {
                         $(this).remove();
+                        $('body').removeClass('lightbox-open');
                     });
                 }
             });
