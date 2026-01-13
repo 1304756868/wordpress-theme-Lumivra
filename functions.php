@@ -231,6 +231,28 @@ function lumivra_scripts() {
 add_action('wp_enqueue_scripts', 'lumivra_scripts');
 
 /**
+ * 获取随机默认缩略图 URL（当文章没有特色图时使用）
+ *
+ * @return string 绝对 URL
+ */
+function lumivra_get_random_default_thumbnail_url() {
+    $uri_base = get_template_directory_uri() . '/assets/png/random/';
+    $dir = get_template_directory() . '/assets/png/random/';
+
+    if (!is_dir($dir)) {
+        return $uri_base . 'default-1.svg';
+    }
+
+    $files = glob($dir . '*.{png,jpg,jpeg,svg}', GLOB_BRACE);
+    if (empty($files)) {
+        return $uri_base . 'default-1.svg';
+    }
+
+    $file = $files[array_rand($files)];
+    return $uri_base . basename($file);
+}
+
+/**
  * 自定义摘要长度
  */
 function lumivra_excerpt_length($length) {

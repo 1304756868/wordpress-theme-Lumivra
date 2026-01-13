@@ -17,6 +17,9 @@
             $(this).toggleClass('active');
             $('.main-navigation').toggleClass('toggled');
             $('body').toggleClass('menu-open');
+            // 同步 aria-expanded 属性，便于辅助设备识别状态
+            var expanded = $(this).hasClass('active') ? 'true' : 'false';
+            $(this).attr('aria-expanded', expanded);
         });
 
         // 点击外部关闭菜单
@@ -25,6 +28,7 @@
                 $('.menu-toggle').removeClass('active');
                 $('.main-navigation').removeClass('toggled');
                 $('body').removeClass('menu-open');
+                $('.menu-toggle').attr('aria-expanded', 'false');
             }
         });
 
@@ -234,7 +238,8 @@
             // 在这里添加需要在窗口尺寸改变后执行的代码
             if ($(window).width() < 768) {
                 $('.main-navigation').removeClass('toggled');
-                $('.menu-toggle').removeClass('active');
+                    $('.menu-toggle').removeClass('active');
+                    $('.menu-toggle').attr('aria-expanded', 'false');
             }
         }, 250);
     });

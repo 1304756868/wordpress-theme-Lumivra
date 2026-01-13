@@ -55,6 +55,13 @@
         height: 200px;
     }
 
+    /* 移动端允许文章摘要显示两行，提高信息密度与可读性 */
+    .post-excerpt {
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
+        max-height: 3em !important;
+    }
+
     .header-inner {
         padding: 1rem;
     }

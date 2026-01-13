@@ -36,7 +36,19 @@ get_header();
                                     <?php the_post_thumbnail('lumivra-thumbnail'); ?>
                                 </a>
                             </div>
-                        <?php endif; endif; ?>
+                        <?php else : ?>
+                            <div class="post-thumbnail">
+                                <a href="<?php the_permalink(); ?>">
+                                    <img src="<?php echo esc_url( lumivra_get_random_default_thumbnail_url() ); ?>" alt="<?php the_title_attribute(); ?>" />
+                                </a>
+                            </div>
+                        <?php endif; else : ?>
+                            <div class="post-thumbnail">
+                                <a href="<?php the_permalink(); ?>">
+                                    <img src="<?php echo esc_url( lumivra_get_random_default_thumbnail_url() ); ?>" alt="<?php the_title_attribute(); ?>" />
+                                </a>
+                            </div>
+                        <?php endif; ?>
 
                         <div class="post-content">
                             <h2 class="post-title">
