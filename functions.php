@@ -73,6 +73,9 @@ function lumivra_setup() {
 
     // 启用响应式嵌入
     add_theme_support('responsive-embeds');
+
+    // 加载主题文本域
+    load_theme_textdomain('lumivra', get_template_directory() . '/languages');
 }
 add_action('after_setup_theme', 'lumivra_setup');
 
