@@ -225,6 +225,7 @@ function lumivra_scripts() {
 
     // 主 JavaScript 文件
     wp_enqueue_script('lumivra-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.2.0', true);
+    wp_script_add_data('lumivra-script', 'defer', true);
 
     // 将主题目录 URL 传给 JS，便于引用主题内资源（如加载占位图）
     wp_localize_script('lumivra-script', 'lumivra', array(
@@ -234,9 +235,65 @@ function lumivra_scripts() {
     // 评论回复脚本
     if (is_singular() && comments_open() && get_option('thread_comments')) {
         wp_enqueue_script('comment-reply');
+        wp_script_add_data('comment-reply', 'defer', true);
     }
 }
 add_action('wp_enqueue_scripts', 'lumivra_scripts');
+
+/**
+ * 移除 jQuery Migrate 以优化加载速度
+ */
+function lumivra_remove_jquery_migrate($scripts) {
+    if (!is_admin() && isset($scripts->registered['jquery'])) {
+        $jquery_dependencies = $scripts->registered['jquery']->deps;
+        $scripts->registered['jquery']->deps = array_diff($jquery_dependencies, array('jquery-migrate'));
+    }
+}
+add_action('wp_default_scripts', 'lumivra_remove_jquery_migrate');
+
+/**
+ * 添加资源预连接以优化加载速度
+ */
+function lumivra_resource_hints($hints, $relation_type) {
+    if ('preconnect' === $relation_type) {
+        $hints[] = 'https://cravatar.cn';
+        $hints[] = 'https://cdn.jsdelivr.net';
+    }
+    return $hints;
+}
+add_filter('wp_resource_hints', 'lumivra_resource_hints', 10, 2);
+
+/**
+ * 禁用 WordPress emoji 以优化加载速度
+ */
+function lumivra_disable_emojis() {
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('wp_print_styles', 'print_emoji_styles');
+    remove_action('admin_print_scripts', 'print_emoji_detection_script');
+    remove_action('admin_print_styles', 'print_emoji_styles');
+    remove_filter('the_content_feed', 'wp_staticize_emoji');
+    remove_filter('comment_text_rss', 'wp_staticize_emoji');
+    remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
+    add_filter('tiny_mce_plugins', 'lumivra_disable_emojis_tinymce');
+    add_filter('wp_resource_hints', 'lumivra_disable_emojis_remove_dns_prefetch', 10, 2);
+}
+add_action('init', 'lumivra_disable_emojis');
+
+function lumivra_disable_emojis_tinymce($plugins) {
+    if (is_array($plugins)) {
+        return array_diff($plugins, array('wpemoji'));
+    } else {
+        return array();
+    }
+}
+
+function lumivra_disable_emojis_remove_dns_prefetch($urls, $relation_type) {
+    if ('dns-prefetch' === $relation_type) {
+        $emoji_svg_url = apply_filters('emoji_svg_url', 'https://s.w.org/images/core/emoji/2/svg/');
+        $urls = array_diff($urls, array($emoji_svg_url));
+    }
+    return $urls;
+}
 
 /**
  * 获取随机默认缩略图 URL（当文章没有特色图时使用）
