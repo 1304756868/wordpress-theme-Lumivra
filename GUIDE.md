@@ -903,6 +903,8 @@ A: 这是响应式设计的正常表现。如需调整：
    - [WordPress Codex](https://codex.wordpress.org/)
 
 2. **联系技术支持**
+   
+   前往 GitHub [创建 issue](https://github.com/ty-yqs/wordpress-theme-Lumivra/issues/new/choose)：
    - 提供详细的错误描述
    - 附上截图
    - 说明已尝试的解决方法
@@ -1052,6 +1054,6 @@ add_action('widgets_init', 'lumivra_child_widgets_init');
 
 感谢您选择 Lumivra 主题！
 
-如果您在使用过程中有任何问题或建议，欢迎联系我们。
+如果您在使用过程中有任何问题或建议，欢迎 [联系我们](https://github.com/ty-yqs/wordpress-theme-Lumivra/issues/new/choose)。
 
 祝您使用愉快！ ✨
