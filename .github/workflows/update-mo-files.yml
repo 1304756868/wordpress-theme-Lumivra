@@ -8,6 +8,9 @@ on:
     paths:
       - 'languages/*.po'
 
+permissions:
+  contents: write
+
 jobs:
   update-mo:
     runs-on: ubuntu-latest
@@ -17,6 +20,8 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        persist-credentials: true
+        fetch-depth: 0
 
     - name: Install gettext
       run: sudo apt-get update && sudo apt-get install -y gettext
