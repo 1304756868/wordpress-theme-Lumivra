@@ -25,7 +25,7 @@ msgid "侧边栏"
 msgstr "Sidebar"
 
 msgid "添加小工具到主侧边栏"
-msgstr "Add widgets to the sidebar"
+msgstr "Add widgets to the main sidebar"
 
 msgid "评论 (1 条评论)"
 msgstr "Comments (1 Comment)"
