@@ -1,9 +1,9 @@
 ---
 name: Help wanted
-about: Extra attention is needed
+about: Help is needed
 title: '[Help] '
 labels: help wanted
-assignees: ''
+assignees: 'Copilot'
 ---
 
 ### 详细的错误描述
