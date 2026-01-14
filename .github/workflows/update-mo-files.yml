@@ -1,0 +1,53 @@
+name: Update MO Files
+
+on:
+  push:
+    paths:
+      - 'languages/*.po'
+  pull_request:
+    paths:
+      - 'languages/*.po'
+
+jobs:
+  update-mo:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install gettext
+      run: sudo apt-get update && sudo apt-get install -y gettext
+
+    - name: Update MO files
+      run: |
+        cd languages
+        for po_file in *.po; do
+          if [[ -f "$po_file" ]]; then
+            mo_file="${po_file%.po}.mo"
+            echo "Compiling $po_file to $mo_file"
+            msgfmt "$po_file" -o "$mo_file"
+          fi
+        done
+
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if git diff --quiet languages/*.mo; then
+          echo "No changes to MO files"
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "MO files have been updated"
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and push changes
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add languages/*.mo
+        git commit -m "Update MO files from PO changes"
+        git push
