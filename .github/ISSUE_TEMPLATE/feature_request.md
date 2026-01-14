@@ -3,7 +3,7 @@ name: Feature request
 about: New feature or request
 title: '[Feature] '
 labels: request for new feature
-assignees: ''
+assignees: 'ty-yqs'
 ---
 
 ### 详细的功能需求

@@ -3,7 +3,7 @@ name: Help wanted
 about: Help is needed
 title: '[Help] '
 labels: help wanted
-assignees: 'copilot'
+assignees: 'ty-yqs'
 ---
 
 ### 详细的错误描述

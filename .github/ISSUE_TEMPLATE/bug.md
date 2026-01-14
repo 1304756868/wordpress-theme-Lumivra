@@ -3,7 +3,7 @@ name: Bug report
 about: Something isn't working
 title: '[Bug] '
 labels: bug
-assignees: ''
+assignees: 'ty-yqs'
 ---
 
 ### 详细的错误描述
