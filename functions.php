@@ -611,3 +611,11 @@ function lumivra_custom_home_title($title) {
     return $title;
 }
 add_filter('pre_get_document_title', 'lumivra_custom_home_title', 10, 1);
+
+/**
+ * 将头像源从 secure.gravatar.com 更换为 cravatar.cn
+ */
+function lumivra_change_avatar_url($url) {
+    return str_replace('secure.gravatar.com', 'cravatar.cn', $url);
+}
+add_filter('get_avatar_url', 'lumivra_change_avatar_url');
