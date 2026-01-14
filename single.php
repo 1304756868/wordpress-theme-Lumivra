@@ -26,7 +26,7 @@ get_header();
                                 </time>
                             </span>
                             <span class="byline">
-                                <?php printf(__('作者: %s', 'lumivra'), '<a href="' . get_author_posts_url(get_the_author_meta('ID')) . '">' . get_the_author() . '</a>'); ?>
+                                <?php printf(__('作者: %s', 'lumivra'), '<a href="' . get_author_posts_url(get_the_author_meta('ID')) . '">' . get_the_author_meta('display_name') . '</a>'); ?>
                             </span>
                             <?php if (has_category()) : ?>
                                 <span class="cat-links">

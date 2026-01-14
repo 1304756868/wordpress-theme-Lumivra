@@ -155,24 +155,6 @@ function lumivra_settings_init() {
     );
 
     add_settings_field(
-        'show_featured_image',
-        '显示特色图片',
-        'lumivra_checkbox_field_render',
-        'lumivra_settings',
-        'lumivra_blog_section',
-        array('field' => 'show_featured_image', 'label' => '在文章列表显示特色图片')
-    );
-
-    add_settings_field(
-        'show_author',
-        '显示作者信息',
-        'lumivra_checkbox_field_render',
-        'lumivra_settings',
-        'lumivra_blog_section',
-        array('field' => 'show_author', 'label' => '在文章列表显示作者信息')
-    );
-
-    add_settings_field(
         'excerpt_length',
         '摘要字数',
         'lumivra_number_field_render',
@@ -413,8 +395,6 @@ function lumivra_validate_options($input) {
     }
 
     // 验证博客设置
-    $output['show_featured_image'] = isset($input['show_featured_image']) ? '1' : '0';
-    $output['show_author'] = isset($input['show_author']) ? '1' : '0';
     if (isset($input['excerpt_length'])) {
         $output['excerpt_length'] = absint($input['excerpt_length']);
     }

@@ -188,30 +188,6 @@ function lumivra_customize_register($wp_customize) {
         'priority' => 70,
     ));
 
-    // 显示特色图片
-    $wp_customize->add_setting('lumivra_show_featured_image', array(
-        'default'           => true,
-        'sanitize_callback' => 'lumivra_sanitize_checkbox',
-    ));
-
-    $wp_customize->add_control('lumivra_show_featured_image', array(
-        'label'    => __('在文章列表显示特色图片', 'lumivra'),
-        'section'  => 'lumivra_blog',
-        'type'     => 'checkbox',
-    ));
-
-    // 显示作者信息
-    $wp_customize->add_setting('lumivra_show_author', array(
-        'default'           => true,
-        'sanitize_callback' => 'lumivra_sanitize_checkbox',
-    ));
-
-    $wp_customize->add_control('lumivra_show_author', array(
-        'label'    => __('显示作者信息', 'lumivra'),
-        'section'  => 'lumivra_blog',
-        'type'     => 'checkbox',
-    ));
-
     // 摘要长度
     $wp_customize->add_setting('lumivra_excerpt_length', array(
         'default'           => 40,

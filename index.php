@@ -61,7 +61,7 @@ get_header();
                                         </time>
                                     </span>
                                     <span class="post-author">
-                                        <?php printf(__('作者: %s', 'lumivra'), get_the_author()); ?>
+                                        <?php printf(__('作者: %s', 'lumivra'), get_the_author_meta('display_name')); ?>
                                     </span>
                                     <?php if (has_category()) : ?>
                                         <span class="post-categories">
