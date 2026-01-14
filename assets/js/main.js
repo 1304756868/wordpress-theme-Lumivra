@@ -210,21 +210,31 @@
         // 评论表单验证
         // ============================================
         $('#commentform').on('submit', function(e) {
-            var name = $('#author').val();
-            var email = $('#email').val();
             var comment = $('#comment').val();
             var error = false;
 
-            if (name === '' || email === '' || comment === '') {
-                alert('请填写所有必填字段');
+            // 检查评论内容是否为空
+            if (comment === '') {
+                alert('请填写评论内容');
                 error = true;
             }
 
-            if (!error) {
-                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(email)) {
-                    alert('请输入有效的邮箱地址');
+            // 只对未登录用户验证姓名和邮箱字段
+            if ($('#author').length > 0) {
+                var name = $('#author').val();
+                var email = $('#email').val();
+
+                if (name === '' || email === '') {
+                    alert('请填写所有必填字段');
                     error = true;
+                }
+
+                if (!error) {
+                    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(email)) {
+                        alert('请输入有效的邮箱地址');
+                        error = true;
+                    }
                 }
             }
 

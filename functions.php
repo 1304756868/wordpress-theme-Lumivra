@@ -369,40 +369,160 @@ add_action('wp_footer', 'lumivra_back_to_top');
  * 自定义评论列表
  */
 function lumivra_comment($comment, $args, $depth) {
-    $tag = ('div' === $args['style']) ? 'div' : 'li';
+    if ( 'div' === $args['style'] ) {
+        $tag       = 'div';
+        $add_below = 'comment';
+    } else {
+        $tag       = 'li';
+        $add_below = 'div-comment';
+    }
+    
+    // 模拟徽章等级，实际项目中可能来自数据库
+    $badges = '';
+    $user_id = $comment->user_id;
+    if ($user_id > 0) {
+        // $badges .= '<span class="badge-level">LV.1</span>'; // 移除等级显示
+        if (user_can($user_id, 'administrator')) {
+            $badges .= '<span class="badge-admin">管理员</span>';
+        } else {
+            $badges .= '<span class="badge-member">评论达人</span>';
+        }
+    } else {
+        $badges .= '<span class="badge-guest">游客</span>';
+    }
+
+    // 系统信息
+    $user_agent = $comment->comment_agent;
+    $os_icon = '💻'; 
+    $os_name = 'Windows';
+    $browser_icon = '🌐';
+    $browser_name = 'Chrome';
+    
+    if (strpos($user_agent, 'Mac') !== false) { $os_icon = '🍎'; $os_name = 'macOS'; }
+    elseif (strpos($user_agent, 'Linux') !== false) { $os_icon = '🐧'; $os_name = 'Linux'; }
+    elseif (strpos($user_agent, 'Android') !== false) { $os_icon = '🤖'; $os_name = 'Android'; }
+    
+    if (strpos($user_agent, 'Firefox') !== false) { $browser_icon = '🦊'; $browser_name = 'Firefox'; }
+    elseif (strpos($user_agent, 'Edge') !== false) { $browser_icon = '🌊'; $browser_name = 'Edge'; }
+    elseif (strpos($user_agent, 'Safari') !== false && strpos($user_agent, 'Chrome') === false) { $browser_icon = '🧭'; $browser_name = 'Safari'; }
+    
+    // 获取评论位置信息
+    $comment_location = get_comment_meta($comment->comment_ID, 'lumivra_comment_location', true);
+
+    // 如果位置信息不存在，且不是本地开发环境 (如果是本地IP，API可能无法解析，或者我们选择不请求)
+    if (empty($comment_location) && !empty($comment->comment_author_IP) && $comment->comment_author_IP != '127.0.0.1' && $comment->comment_author_IP != '::1') {
+        // 尝试获取位置信息 (对于旧评论，懒加载)
+        // 注意：这里可能会影响页面加载速度，如果是大量评论的页面，建议使用异步加载或者后台任务。
+        // 为了演示效果，且假设单页评论数不多，我们这里做个简单的请求，但设置较短的超时时间。
+        // 在实际生产环境中，最好是在评论发布时获取，或使用 WP Cron 定时更新。
+        $comment_location = lumivra_fetch_ip_location($comment->comment_author_IP);
+        if ($comment_location) {
+            update_comment_meta($comment->comment_ID, 'lumivra_comment_location', $comment_location);
+        }
+    }
+    
+    if (empty($comment_location)) {
+        $comment_location = '火星';
+    }
+
     ?>
-    <<?php echo $tag; ?> id="comment-<?php comment_ID(); ?>" <?php comment_class(empty($args['has_children']) ? '' : 'parent'); ?>>
-        <article id="div-comment-<?php comment_ID(); ?>" class="comment-body">
-            <footer class="comment-meta">
-                <div class="comment-author vcard">
-                    <?php echo get_avatar($comment, $args['avatar_size']); ?>
-                    <?php printf('<b class="fn">%s</b>', get_comment_author_link()); ?>
-                </div>
-                <div class="comment-metadata">
-                    <a href="<?php echo esc_url(get_comment_link($comment, $args)); ?>">
-                        <time datetime="<?php comment_time('c'); ?>">
-                            <?php printf('%1$s %2$s', get_comment_date(), get_comment_time()); ?>
-                        </time>
-                    </a>
-                </div>
-            </footer>
+    <<?php echo $tag; ?> <?php comment_class(empty($args['has_children']) ? '' : 'parent'); ?> id="comment-<?php comment_ID(); ?>">
+    
+    <div id="div-comment-<?php comment_ID(); ?>" class="comment-body">
+        <div class="comment-author-avatar">
+            <?php if ($args['avatar_size'] != 0) echo get_avatar($comment, $args['avatar_size']); ?>
+        </div>
+        
+        <div class="comment-main-area">
+            <div class="comment-meta-header">
+                <span class="comment-author-name"><?php echo get_comment_author_link(); ?></span>
+                <span class="comment-badges"><?php echo $badges; ?></span>
+                <span class="comment-time-wrapper">
+                    <time datetime="<?php comment_time('Y-m-d H:i:s'); ?>">
+                        <?php comment_time('Y-m-d H:i:s'); ?>
+                    </time>
+                </span>
+            </div>
 
             <div class="comment-content">
                 <?php comment_text(); ?>
             </div>
 
-            <div class="reply">
-                <?php
-                comment_reply_link(array_merge($args, array(
-                    'add_below' => 'div-comment',
-                    'depth'     => $depth,
-                    'max_depth' => $args['max_depth'],
-                )));
-                ?>
+            <div class="comment-meta-footer">
+                <div class="comment-location-info">
+                   <span class="info-item" title="<?php echo esc_attr($os_name); ?>"><span class="icon"><?php echo $os_icon; ?></span> <?php echo esc_html($os_name); ?></span>
+                   <span class="info-item" title="<?php echo esc_attr($browser_name); ?>"><span class="icon"><?php echo $browser_icon; ?></span> <?php echo esc_html($browser_name); ?></span>
+                   <span class="info-item location"><span class="icon">📍</span> 来自：<?php echo esc_html($comment_location); ?></span>
+                </div>
+                
+                <div class="reply-button">
+                    <?php comment_reply_link(array_merge($args, array('add_below' => $add_below, 'depth' => $depth, 'max_depth' => $args['max_depth']))); ?>
+                </div>
             </div>
-        </article>
+        </div>
+    </div>
     <?php
 }
+
+/**
+ * 获取 IP 归属地信息
+ *
+ * @param string $ip IP地址
+ * @return string|false 格式化的地址信息 或 false
+ */
+function lumivra_fetch_ip_location($ip) {
+    if (empty($ip)) {
+        return false;
+    }
+
+    $api_url = "https://v2.xxapi.cn/api/ip?ip=" . $ip;
+    
+    // 发起请求，设置较短的超时时间防止阻塞
+    $response = wp_remote_get($api_url, array('timeout' => 3));
+
+    if (is_wp_error($response)) {
+        return false;
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+
+    if (isset($data['code']) && $data['code'] == 200 && isset($data['data'])) {
+        $address = isset($data['data']['address']) ? $data['data']['address'] : '';
+        $isp = isset($data['data']['isp']) ? $data['data']['isp'] : '';
+        
+        // 特殊情况处理：保留地址或无ISP信息时显示未“本地”
+        if ($address === '保留地址' || $isp === '0') {
+            return '本地';
+        }
+
+        // 拼接地址和ISP
+        $location = trim($address . ' ' . $isp);
+        return $location;
+    }
+
+    return false;
+}
+
+/**
+ * 评论发布时自动保存 IP 归属地信息
+ * 
+ * @param int $comment_id 评论ID
+ */
+function lumivra_save_comment_location($comment_id) {
+    $comment = get_comment($comment_id);
+    if ($comment) {
+        $ip = $comment->comment_author_IP;
+        // 避免重复获取（如果已经有了）
+        if (!get_comment_meta($comment_id, 'lumivra_comment_location', true)) {
+            $location = lumivra_fetch_ip_location($ip);
+            if ($location) {
+                update_comment_meta($comment_id, 'lumivra_comment_location', $location);
+            }
+        }
+    }
+}
+add_action('comment_post', 'lumivra_save_comment_location');
 
 /**
  * 加载主题选项（自定义器）

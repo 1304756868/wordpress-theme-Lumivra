@@ -152,6 +152,41 @@
         padding: 1.5rem;
     }
 
+    /* 移动端评论样式 */
+    .comment-body {
+        flex-direction: row;
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+
+    .comment-avatar {
+        align-self: flex-start;
+        flex-shrink: 0;
+    }
+
+    .comment-avatar-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .comment-author-info {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .comment-meta {
+        font-size: 0.8rem;
+    }
+
+    .comment-form {
+        padding: 1.5rem;
+    }
+
+    .comment-list .children {
+        margin-left: 1rem;
+    }
+
     .back-to-top {
         bottom: 1rem;
         right: 1rem;
@@ -181,6 +216,19 @@
 
     .footer-widgets {
         gap: 1.5rem;
+    }
+
+    /* 小屏设备评论样式 */
+    .comments-title {
+        font-size: 1.5rem;
+    }
+
+    .comment-form {
+        padding: 1rem;
+    }
+
+    .comment-form .comment-reply-title {
+        font-size: 1.25rem;
     }
 }
 
@@ -292,51 +340,259 @@
 }
 
 /* 评论样式增强 */
+/* 评论区样式 */
 .comments-area {
     margin-top: 3rem;
     padding-top: 3rem;
     border-top: 1px solid var(--border-color);
 }
 
+.comments-header {
+    margin-bottom: 2.5rem;
+}
+
 .comments-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+    position: relative;
+}
+
+.comments-title::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 3rem;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+.comments-list-wrapper {
     margin-bottom: 2rem;
 }
 
 .comment-list {
     list-style: none;
     padding: 0;
+    margin: 0;
+}
+
+.comment-list .comment {
+    margin-bottom: 1.5rem;
+}
+
+.comment-list .children {
+    margin-left: 2rem;
+    margin-top: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--border-color-light);
+    list-style: none; /* 移除回复列表的序号 */
 }
 
 .comment-body {
+    display: flex;
+    gap: 1rem;
     background: var(--bg-secondary);
     padding: 1.5rem;
     border-radius: var(--border-radius);
-    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color-light);
+    transition: var(--transition);
+    position: relative;
+}
+
+.comment-body:hover {
+    box-shadow: none;
+    background: transparent;
+}
+
+.comment-avatar {
+    flex-shrink: 0;
+}
+
+.comment-avatar-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid var(--bg-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment-content-wrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+.comment-header {
+    margin-bottom: 0.75rem;
+}
+
+.comment-author-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.comment-author {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.comment-author a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.comment-author a:hover {
+    color: var(--primary-color);
 }
 
 .comment-meta {
     display: flex;
     align-items: center;
     gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.comment-date {
+    color: var(--text-secondary);
+}
+
+.edit-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.edit-link:hover {
+    text-decoration: underline;
+}
+
+.comment-content {
+    color: var(--text-primary);
+    line-height: 1.6;
     margin-bottom: 1rem;
 }
 
-.comment-author img {
-    border-radius: 50%;
+.comment-content p:last-child {
+    margin-bottom: 0;
 }
 
+.comment-footer {
+    border-top: 1px solid var(--border-color-light);
+    padding-top: 0.75rem;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.comment-actions .reply {
+    margin: 0;
+}
+
+.comment-actions .comment-reply-link {
+    background: var(--bg-primary);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--primary-color);
+    transition: var(--transition);
+}
+
+.comment-actions .comment-reply-link:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.comments-closed {
+    background: var(--bg-warning-light);
+    border: 1px solid var(--warning-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--warning-color);
+}
+
+.no-comments {
+    margin: 0;
+    font-weight: 500;
+}
+
+/* 评论表单样式 */
 .comment-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color-light);
+    border-radius: var(--border-radius);
+    padding: 2rem;
     margin-top: 2rem;
 }
 
-.comment-form p {
-    margin-bottom: 1rem;
+#reply-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 3rem 0 1.5rem 0;
+    padding-bottom: 0;
+    border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#reply-title small {
+    font-size: 100%; /* 覆盖默认的小号字体 */
+    font-weight: normal;
+}
+
+#reply-title a {
+    color: var(--text-light); /* 取消回复链接颜色 */
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 99px;
+    transition: var(--transition);
+    text-decoration: none;
+    margin-left: 1rem;
+    display: inline-block;
+    line-height: 1.5; /* 确保行高一致 */
+}
+
+#reply-title a:hover {
+    color: var(--error-color);
+    border-color: var(--error-color);
+    background: var(--bg-warning-light);
+}
+
+.comment-form-comment,
+.comment-form-author,
+.comment-form-email,
+.comment-form-url {
+    margin-bottom: 1.5rem;
 }
 
 .comment-form label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.comment-form .required {
+    color: var(--error-color);
 }
 
 .comment-form input[type="text"],
@@ -344,25 +600,68 @@
 .comment-form input[type="url"],
 .comment-form textarea {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
     font-family: inherit;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.comment-form input[type="text"]:focus,
+.comment-form input[type="email"]:focus,
+.comment-form input[type="url"]:focus,
+.comment-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.comment-form textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
 }
 
 .comment-form input[type="submit"] {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 2rem;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 1rem;
     transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .comment-form input[type="submit"]:hover {
-    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.4);
+}
+
+.comment-form input[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* 已登录用户的评论表单样式 */
+.logged-in-as {
+    background: var(--bg-success-light);
+    border: 1px solid var(--success-color);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--success-color);
+}
+
+.logged-in-as a {
+    color: var(--success-color);
+    font-weight: 600;
+    text-decoration: underline;
 }
 
 /* 文章导航 */
@@ -398,6 +697,380 @@
 .nav-title {
     display: block;
     font-weight: 600;
+}
+
+/* ============================================
+   评论区重构 (匹配设计图)
+   ============================================ */
+
+/* 整体容器 */
+.comments-area {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: none; /* 移除原来的边框，设计图看起来比较干净 */
+}
+
+/* 评论头部：标题 */
+.comments-header-wrapper {
+    padding-bottom: 1rem;
+    /* border-bottom: 2px solid #5cb85c; 移除绿色下划线 */
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.comments-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comments-title .icon-comment {
+    font-size: 1.25em;
+    color: var(--text-light); /* 图里的图标颜色 */
+}
+
+/* 评论表单 */
+.comment-form {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 3rem;
+    border: none;
+    border-radius: 0;
+}
+
+.comment-form-comment {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.comment-form textarea {
+    width: 100%;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    height: 120px;
+    resize: vertical;
+}
+
+.comment-form textarea:focus {
+    background: #fff;
+    border-color: #5cb85c; /* 绿色聚焦 */
+    box-shadow: 0 0 0 2px rgba(92, 184, 92, 0.1);
+}
+
+/* 个人信息行 (未登录) */
+.comment-input-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.comment-input-row > div {
+    flex: 1;
+    min-width: 200px;
+}
+
+.comment-form input[type="text"],
+.comment-form input[type="email"],
+.comment-form input[type="url"] {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.comment-form input[type="text"]:focus,
+.comment-form input[type="email"]:focus,
+.comment-form input[type="url"]:focus {
+    background: #fff;
+    border-color: #5cb85c;
+    box-shadow: none;
+    outline: none;
+}
+
+/* Cookies Consent Checkbox */
+.comment-form-cookies-consent {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.comment-form-cookies-consent input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.comment-form-cookies-consent label {
+    display: inline;
+    margin-bottom: 0;
+    font-weight: normal;
+    color: #666;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* 提交按钮区域 */
+.form-submit {
+    width: 100%; /* 确保容器占满全宽 */
+    text-align: right;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-right: 0; /* 确保没有右边距 */
+    padding-right: 0; /* 确保没有右内边距 */
+}
+
+.comment-form .submit {
+    background: var(--primary-color); /* 使用主题主色 */
+    color: white;
+    padding: 0.75rem 2rem; /* 调整内边距以匹配主题按钮 */
+    border: none;
+    border-radius: var(--border-radius); /* 使用主题圆角 */
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* 增加阴影 */
+}
+
+.comment-form .submit:hover {
+    background: var(--secondary-color); /* 主题悬停色 */
+    transform: translateY(-2px); /* 主题常见的悬停上浮 */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.submit-icon {
+    font-size: 1.1em;
+}
+
+/* 已登录提示 */
+.logged-in-as {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.logged-in-as a {
+    color: #5cb85c;
+    text-decoration: none;
+}
+
+/* 评论列表 */
+.comment-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.comment-body {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px dashed #eee; /* 分隔线 */
+    background: transparent; /* 移除之前的卡片背景 */
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* 移除该样式，确保所有评论（包括最后一条和回复）都有底部分隔线，防止视觉粘连
+.comment-list li:last-child .comment-body {
+    border-bottom: none;
+}
+*/
+
+.comment-author-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none; /* 移除原来的边框 */
+    box-shadow: none;
+}
+
+.comment-main-area {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 评论元数据头部 */
+.comment-meta-header {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.comment-author-name a,
+.comment-author-name {
+    font-weight: 700;
+    color: #333;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.badge-level, .badge-admin, .badge-member {
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-right: 2px;
+    font-weight: normal;
+}
+
+.badge-level {
+    background: #f0f0f0;
+    color: #999;
+}
+
+.badge-admin {
+    background: #ffc107;
+    color: #555;
+    font-weight: bold;
+}
+
+.badge-member {
+    background: #e7f5ff;
+    color: #007bff;
+}
+
+.badge-guest {
+    background: #f5f5f5;
+    color: #888;
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-right: 2px;
+    font-weight: normal;
+}
+
+.comment-time-wrapper {
+    font-size: 0.8rem;
+    color: #999;
+    margin-left: auto; /* 时间靠右? 或者紧随其后 */
+}
+/* 设计图中时间在名字下面，或者同一行。图里是: 名字 徽章 时间(换行了)
+   我们这里做成同一行比较整洁，或者换行。
+   图里:
+   Name Badge
+   Time
+*/
+.comment-meta-header {
+    display: block; /* 换行布局 */
+    margin-bottom: 0.25rem;
+}
+
+.comment-author-name {
+    margin-right: 0.5rem;
+}
+
+.comment-time-wrapper {
+    display: block;
+    font-size: 0.75rem;
+    color: #bbb;
+    margin-top: 0.1rem;
+    margin-left: 0;
+}
+
+/* 评论内容 */
+.comment-content {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.comment-content p {
+    margin-bottom: 0.5rem;
+}
+
+/* 底部信息栏 (System Info & Location) */
+.comment-meta-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+.comment-location-info {
+    display: flex;
+    gap: 1rem;
+}
+
+.info-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.info-item .icon {
+    font-size: 1em; /* Emoji size */
+}
+
+/* 回复按钮 - 图中未明确显示位置，通常在右下角 */
+.reply-button a {
+    color: #5cb85c; /* 绿色文字 */
+    text-decoration: none;
+    border: 1px solid #5cb85c;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+    background: transparent;
+}
+
+.reply-button a:hover {
+    background: #5cb85c;
+    color: white;
+}
+
+/* 移动端适配 */
+@media (max-width: 600px) {
+    .comment-input-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .comment-input-row > div {
+        width: 100%;
+    }
+    
+    .form-submit {
+        justify-content: center;
+    }
+    
+    .comment-body {
+        padding: 1rem 0;
+    }
+    
+    .comment-location-info {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 }
 
 /* 打印样式 */
