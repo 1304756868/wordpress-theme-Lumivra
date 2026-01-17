@@ -33,6 +33,25 @@
         });
 
         // ============================================
+        // 阅读进度条
+        // ============================================
+        if ($('.scroll-progress').length) {
+            $(window).scroll(function() {
+                var scrollTop = $(window).scrollTop();
+                var docHeight = $(document).height();
+                var winHeight = $(window).height();
+                var scrollPercent = 0;
+
+                if (docHeight > winHeight) {
+                    scrollPercent = (scrollTop) / (docHeight - winHeight);
+                }
+
+                var scrollPercentRounded = Math.min(100, Math.max(0, Math.round(scrollPercent * 100)));
+                $('.scroll-progress').css('width', scrollPercentRounded + '%');
+            });
+        }
+
+        // ============================================
         // 返回顶部按钮
         // ============================================
         var backToTop = $('#back-to-top');

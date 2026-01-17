@@ -1518,3 +1518,17 @@ body.lightbox-open {
     text-decoration: underline;
     color: #ffffff;
 }
+
+/* ============================================
+   阅读进度条
+   ============================================ */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: var(--primary-color);
+    z-index: 99999;
+    transition: width 0.1s ease;
+}

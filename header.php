@@ -10,6 +10,10 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
+<?php if ( is_single() ) : ?>
+    <div id="scroll-progress" class="scroll-progress"></div>
+<?php endif; ?>
+
 <div id="page" class="site">
     <header id="masthead" class="site-header">
         <div class="header-inner">
