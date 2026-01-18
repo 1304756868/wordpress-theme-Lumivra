@@ -649,6 +649,96 @@ function lumivra_login_logo_url() {
 add_filter('login_headerurl', 'lumivra_login_logo_url');
 
 /**
+ * GitHub 仓库展示短代码
+ * 使用方法: [github]用户名/仓库名[/github]
+ *
+ * @param array $atts 短代码属性
+ * @param string $content 短代码内容
+ * @return string HTML输出
+ */
+function lumivra_github_shortcode($atts, $content = null) {
+    if (empty($content)) {
+        return '<p class="github-error">请提供 GitHub 仓库地址（格式：用户名/仓库名）</p>';
+    }
+    
+    $repo = trim($content);
+    
+    // 验证仓库格式
+    if (!preg_match('/^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/', $repo)) {
+        return '<p class="github-error">仓库地址格式错误，正确格式：用户名/仓库名</p>';
+    }
+    
+    // 设置缓存键
+    $cache_key = 'lumivra_github_' . md5($repo);
+    $cached_data = get_transient($cache_key);
+    
+    // 如果有缓存且未过期，直接使用缓存
+    if ($cached_data !== false) {
+        return $cached_data;
+    }
+    
+    // 调用 GitHub API
+    $api_url = "https://api.github.com/repos/{$repo}";
+    $response = wp_remote_get($api_url, array(
+        'timeout' => 5,
+        'headers' => array(
+            'Accept' => 'application/vnd.github.v3+json',
+            'User-Agent' => 'WordPress-Lumivra-Theme'
+        )
+    ));
+    
+    if (is_wp_error($response)) {
+        return '<p class="github-error">无法获取 GitHub 仓库信息</p>';
+    }
+    
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+    
+    if (!isset($data['id']) || isset($data['message'])) {
+        return '<p class="github-error">仓库不存在或无法访问</p>';
+    }
+    
+    // 提取仓库信息
+    $repo_name = esc_html($data['full_name']);
+    $description = !empty($data['description']) ? esc_html($data['description']) : '暂无描述';
+    $stars = number_format($data['stargazers_count']);
+    $forks = number_format($data['forks_count']);
+    $watchers = number_format($data['subscribers_count']);
+    $repo_url = esc_url($data['html_url']);
+    
+    // 生成 HTML 输出
+    $output = '<div class="github-repo-card">';
+    $output .= '<a href="' . $repo_url . '" target="_blank" rel="noopener noreferrer" class="github-repo-link">';
+    $output .= '<div class="github-header">';
+    $output .= '<svg class="github-icon" height="24" width="24" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>';
+    $output .= '<span class="github-repo-name">' . $repo_name . '</span>';
+    $output .= '</div>';
+    $output .= '<p class="github-description">' . $description . '</p>';
+    $output .= '<div class="github-stats">';
+    $output .= '<span class="github-stat">';
+    $output .= '<svg class="stat-icon" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg>';
+    $output .= '<span class="stat-number">' . $stars . '</span>';
+    $output .= '</span>';
+    $output .= '<span class="github-stat">';
+    $output .= '<svg class="stat-icon" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg>';
+    $output .= '<span class="stat-number">' . $forks . '</span>';
+    $output .= '</span>';
+    $output .= '<span class="github-stat">';
+    $output .= '<svg class="stat-icon" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 010 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.83.88 9.576.43 8.898a1.62 1.62 0 010-1.798c.45-.677 1.367-1.931 2.637-3.022C4.33 2.992 6.019 2 8 2zM1.679 7.932a.12.12 0 000 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 000-.136c-.412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.825.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717zM8 10a2 2 0 100-4 2 2 0 000 4z"></path></svg>';
+    $output .= '<span class="stat-number">' . $watchers . '</span>';
+    $output .= '</span>';
+    $output .= '</div>';
+    $output .= '</a>';
+    $output .= '</div>';
+    
+    // 缓存 1 小时
+    set_transient($cache_key, $output, HOUR_IN_SECONDS);
+    
+    return $output;
+}
+add_shortcode('github', 'lumivra_github_shortcode');
+
+/**
  * 修改登录页面Logo标题
  */
 function lumivra_login_logo_url_title() {
