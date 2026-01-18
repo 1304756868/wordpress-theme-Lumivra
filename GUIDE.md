@@ -553,6 +553,24 @@ get_footer();
 ?>
 ```
 
+### 6. 短代码
+
+您可以在文章和页面的编辑器内使用短代码。
+
+#### GitHub 仓库卡片
+
+显示 GitHub 仓库信息卡片：
+
+```txt
+[github]用户名/仓库名[/github]
+```
+
+示例：
+
+```txt
+[github]ty-yqs/wordpress-theme-Lumivra[/github]
+```
+
 ---
 
 ## 常见问题解答
