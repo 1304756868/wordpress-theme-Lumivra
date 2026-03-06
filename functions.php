@@ -255,6 +255,31 @@ function lumivra_remove_jquery_migrate($scripts) {
 add_action('wp_default_scripts', 'lumivra_remove_jquery_migrate');
 
 /**
+ * 在页面首屏渲染前应用主题模式（深色/浅色/系统），避免闪烁。
+ */
+function lumivra_theme_mode_bootstrap() {
+    ?>
+    <script>
+        (function() {
+            try {
+                var mode = localStorage.getItem('lumivra-theme-mode');
+                var root = document.documentElement;
+
+                if (mode === 'dark' || mode === 'light') {
+                    root.setAttribute('data-theme', mode);
+                    root.setAttribute('data-theme-mode', mode);
+                } else {
+                    root.removeAttribute('data-theme');
+                    root.setAttribute('data-theme-mode', 'system');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <?php
+}
+add_action('wp_head', 'lumivra_theme_mode_bootstrap', 0);
+
+/**
  * 添加资源预连接以优化加载速度
  */
 function lumivra_resource_hints($hints, $relation_type) {

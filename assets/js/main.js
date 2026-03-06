@@ -7,8 +7,111 @@
 (function($) {
     'use strict';
 
+    function lumivraGetSystemTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+        }
+        return 'light';
+    }
+
+    function lumivraGetStoredThemeMode() {
+        try {
+            var mode = localStorage.getItem('lumivra-theme-mode');
+            if (mode === 'dark' || mode === 'light' || mode === 'system') {
+                return mode;
+            }
+        } catch (e) {}
+
+        return 'system';
+    }
+
+    function lumivraSetThemeMode(mode) {
+        var root = document.documentElement;
+        var button = document.getElementById('theme-toggle');
+        var iconEl = button ? button.querySelector('.theme-toggle-icon') : null;
+        var modeLabel = '跟随系统';
+        var icon = '◐';
+
+        if (mode === 'dark') {
+            root.setAttribute('data-theme', 'dark');
+            modeLabel = '深色';
+            icon = '🌙';
+        } else if (mode === 'light') {
+            root.setAttribute('data-theme', 'light');
+            modeLabel = '浅色';
+            icon = '☀';
+        } else {
+            root.removeAttribute('data-theme');
+            mode = 'system';
+            icon = lumivraGetSystemTheme() === 'dark' ? '◑' : '◐';
+        }
+
+        root.setAttribute('data-theme-mode', mode);
+
+        if (button) {
+            button.setAttribute('data-theme-mode', mode);
+            button.setAttribute('aria-label', '主题模式：' + modeLabel + '（点击切换）');
+            button.setAttribute('title', '主题模式：' + modeLabel + '（点击切换）');
+            if (iconEl) {
+                iconEl.textContent = icon;
+            }
+        }
+    }
+
+    function lumivraCycleThemeMode() {
+        var current = lumivraGetStoredThemeMode();
+        if (current === 'system') {
+            return 'dark';
+        }
+        if (current === 'dark') {
+            return 'light';
+        }
+        return 'system';
+    }
+
+    function lumivraInitThemeMode() {
+        var button = document.getElementById('theme-toggle');
+        var mediaQuery;
+
+        lumivraSetThemeMode(lumivraGetStoredThemeMode());
+
+        if (!button) {
+            return;
+        }
+
+        button.addEventListener('click', function() {
+            var nextMode = lumivraCycleThemeMode();
+            try {
+                localStorage.setItem('lumivra-theme-mode', nextMode);
+            } catch (e) {}
+            lumivraSetThemeMode(nextMode);
+        });
+
+        if (window.matchMedia) {
+            mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            if (mediaQuery.addEventListener) {
+                mediaQuery.addEventListener('change', function() {
+                    if (lumivraGetStoredThemeMode() === 'system') {
+                        lumivraSetThemeMode('system');
+                    }
+                });
+            } else if (mediaQuery.addListener) {
+                mediaQuery.addListener(function() {
+                    if (lumivraGetStoredThemeMode() === 'system') {
+                        lumivraSetThemeMode('system');
+                    }
+                });
+            }
+        }
+    }
+
     // 当文档加载完成
     $(document).ready(function() {
+
+        // ============================================
+        // 主题模式切换（系统/深色/浅色）
+        // ============================================
+        lumivraInitThemeMode();
         
         // ============================================
         // 移动端菜单切换

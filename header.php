@@ -48,6 +48,18 @@
                     'fallback_cb'    => false,
                 ));
                 ?>
+
+                <button
+                    type="button"
+                    class="theme-toggle"
+                    id="theme-toggle"
+                    data-theme-mode="system"
+                    aria-label="<?php esc_attr_e('主题模式：跟随系统（点击切换）', 'lumivra'); ?>"
+                    title="<?php esc_attr_e('主题模式：跟随系统（点击切换）', 'lumivra'); ?>"
+                >
+                    <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+                    <span class="screen-reader-text"><?php _e('切换主题模式', 'lumivra'); ?></span>
+                </button>
                 
                 <div class="user-menu">
                     <?php if (is_user_logged_in()) : 

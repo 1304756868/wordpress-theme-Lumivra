@@ -27,6 +27,11 @@ Lumivra - Where light meets design.
     --bg-color: #ffffff;
     --bg-secondary: #f9fafb;
     --border-color: #e5e7eb;
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --menu-overlay-bg: rgba(255, 255, 255, 0.7);
+    --menu-item-bg: rgba(255, 255, 255, 0.35);
+    --menu-item-hover-bg: rgba(255, 255, 255, 0.55);
+    --footer-bg: #111827;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -35,6 +40,41 @@ Lumivra - Where light meets design.
     --max-width: 1200px;
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+html[data-theme="dark"] {
+    --text-color: #e5e7eb;
+    --text-light: #94a3b8;
+    --bg-color: #0f172a;
+    --bg-secondary: #111827;
+    --border-color: #334155;
+    --header-bg: rgba(15, 23, 42, 0.92);
+    --menu-overlay-bg: rgba(15, 23, 42, 0.8);
+    --menu-item-bg: rgba(30, 41, 59, 0.6);
+    --menu-item-hover-bg: rgba(51, 65, 85, 0.7);
+    --footer-bg: #020617;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 20px -8px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 20px 30px -15px rgba(0, 0, 0, 0.75);
+}
+
+/* 系统深色模式：仅在未手动固定为浅色时生效 */
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+        --text-color: #e5e7eb;
+        --text-light: #94a3b8;
+        --bg-color: #0f172a;
+        --bg-secondary: #111827;
+        --border-color: #334155;
+        --header-bg: rgba(15, 23, 42, 0.92);
+        --menu-overlay-bg: rgba(15, 23, 42, 0.8);
+        --menu-item-bg: rgba(30, 41, 59, 0.6);
+        --menu-item-hover-bg: rgba(51, 65, 85, 0.7);
+        --footer-bg: #020617;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 8px 20px -8px rgba(0, 0, 0, 0.6);
+        --shadow-lg: 0 20px 30px -15px rgba(0, 0, 0, 0.75);
+    }
 }
 
 /* ============================================
@@ -161,7 +201,7 @@ img, video, canvas, audio, iframe, embed, object {
     top: 0;
     z-index: 100;
     backdrop-filter: blur(10px);
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--header-bg);
 }
 
 .header-inner {
@@ -200,6 +240,34 @@ img, video, canvas, audio, iframe, embed, object {
     display: flex;
     align-items: center;
     gap: 2rem;
+}
+
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: 0.75rem;
+    padding: 0;
+}
+
+.theme-toggle:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.theme-toggle-icon {
+    font-size: 1.05rem;
+    line-height: 1;
 }
 
 .main-navigation ul {
@@ -1104,7 +1172,7 @@ body.lightbox-open {
    页脚
    ============================================ */
 .site-footer {
-    background: var(--text-color);
+    background: var(--footer-bg);
     color: white;
     padding: 3rem 0 1.5rem;
     margin-top: 4rem;
@@ -1298,7 +1366,7 @@ body.lightbox-open {
         -webkit-overflow-scrolling: touch;
         box-shadow: none;
         /* 更明显的半透明遮罩以便在页面上显著展示 */
-        background: rgba(255, 255, 255, 0.7);
+        background: var(--menu-overlay-bg);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         transform: translateY(0) scaleY(1);
@@ -1318,14 +1386,14 @@ body.lightbox-open {
         display: block;
         padding: 0.9rem 1rem;
         border-radius: 8px;
-        background: rgba(255,255,255,0.35);
+        background: var(--menu-item-bg);
         color: var(--text-color);
         margin-bottom: 0.6rem;
         transition: background 160ms ease, transform 160ms ease;
     }
 
     .main-navigation.toggled ul a:hover {
-        background: rgba(255,255,255,0.55);
+        background: var(--menu-item-hover-bg);
         transform: translateY(-2px);
     }
     
