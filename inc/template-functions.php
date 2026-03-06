@@ -158,6 +158,108 @@ function lumivra_display_reading_time() {
 }
 
 /**
+ * 获取相关文章查询结果（分类优先，其次标签，最后回退到最新文章）。
+ *
+ * @param int $post_id 当前文章 ID。
+ * @param int $posts_per_page 返回数量。
+ * @return WP_Query
+ */
+function lumivra_get_related_posts_query($post_id, $posts_per_page = 3) {
+    $post_id = absint($post_id);
+    $posts_per_page = max(1, absint($posts_per_page));
+
+    $base_args = array(
+        'post_type'           => 'post',
+        'post_status'         => 'publish',
+        'posts_per_page'      => $posts_per_page,
+        'post__not_in'        => array($post_id),
+        'ignore_sticky_posts' => true,
+        'no_found_rows'       => true,
+    );
+
+    $category_ids = wp_get_post_categories($post_id, array('fields' => 'ids'));
+    if (!empty($category_ids)) {
+        $category_query = new WP_Query(array_merge($base_args, array(
+            'category__in' => $category_ids,
+        )));
+
+        if ($category_query->have_posts()) {
+            return $category_query;
+        }
+    }
+
+    $tag_ids = wp_get_post_tags($post_id, array('fields' => 'ids'));
+    if (!empty($tag_ids)) {
+        $tag_query = new WP_Query(array_merge($base_args, array(
+            'tag__in' => $tag_ids,
+        )));
+
+        if ($tag_query->have_posts()) {
+            return $tag_query;
+        }
+    }
+
+    return new WP_Query($base_args);
+}
+
+/**
+ * 输出相关文章区块。
+ *
+ * @param int $post_id 当前文章 ID。
+ * @param int $posts_per_page 返回数量。
+ * @return void
+ */
+function lumivra_render_related_posts($post_id = 0, $posts_per_page = 3) {
+    if (!$post_id) {
+        $post_id = get_the_ID();
+    }
+
+    $post_id = absint($post_id);
+    if (!$post_id) {
+        return;
+    }
+
+    $related_query = lumivra_get_related_posts_query($post_id, $posts_per_page);
+
+    if (!$related_query->have_posts()) {
+        return;
+    }
+    ?>
+    <section class="related-posts" aria-labelledby="related-posts-title">
+        <h2 id="related-posts-title" class="related-posts-title"><?php _e('相关文章', 'lumivra'); ?></h2>
+
+        <div class="related-posts-grid">
+            <?php while ($related_query->have_posts()) : $related_query->the_post(); ?>
+                <article class="related-post-card">
+                    <a class="related-post-thumb" href="<?php the_permalink(); ?>">
+                        <?php if (has_post_thumbnail()) : ?>
+                            <?php the_post_thumbnail('lumivra-thumbnail', array('loading' => 'lazy')); ?>
+                        <?php else : ?>
+                            <img
+                                src="<?php echo esc_url(lumivra_get_random_default_thumbnail_url()); ?>"
+                                alt="<?php echo esc_attr(get_the_title()); ?>"
+                                loading="lazy"
+                            >
+                        <?php endif; ?>
+                    </a>
+
+                    <div class="related-post-content">
+                        <h3 class="related-post-name">
+                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h3>
+                        <p class="related-post-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 22, '...')); ?></p>
+                        <time class="related-post-date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date()); ?></time>
+                    </div>
+                </article>
+            <?php endwhile; ?>
+        </div>
+    </section>
+    <?php
+
+    wp_reset_postdata();
+}
+
+/**
  * 自定义搜索表单
  */
 function lumivra_search_form($form) {

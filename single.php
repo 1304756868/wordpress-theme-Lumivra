@@ -68,6 +68,8 @@ get_header();
                     </footer>
                 </article>
 
+                <?php lumivra_render_related_posts(get_the_ID(), 3); ?>
+
                 <?php
                 // 如果评论开启或有评论，则加载评论模板
                 if (comments_open() || get_comments_number()) :
