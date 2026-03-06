@@ -105,6 +105,174 @@
         }
     }
 
+    function lumivraCreateSlug(text, index) {
+        var slug = (text || '')
+            .toLowerCase()
+            .trim()
+            .replace(/<[^>]*>/g, '')
+            .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '');
+
+        if (!slug) {
+            slug = 'section-' + index;
+        }
+
+        return slug;
+    }
+
+    function lumivraInitPostToc() {
+        var tocContainer = document.getElementById('post-toc');
+        var tocNav = document.getElementById('post-toc-nav');
+        var content = document.querySelector('.single-post .entry-content');
+
+        if (!tocContainer || !tocNav || !content) {
+            return;
+        }
+
+        var headings = Array.prototype.slice.call(content.querySelectorAll('h2, h3'));
+        if (headings.length < 2) {
+            return;
+        }
+
+        var idRegistry = {};
+        var list = document.createElement('ul');
+        list.className = 'post-toc-list';
+
+        headings.forEach(function(heading, index) {
+            var title = heading.textContent ? heading.textContent.trim() : '';
+            if (!title) {
+                return;
+            }
+
+            if (!heading.id) {
+                var baseId = 'toc-' + lumivraCreateSlug(title, index + 1);
+                var uniqueId = baseId;
+                var suffix = 2;
+
+                while (document.getElementById(uniqueId) || idRegistry[uniqueId]) {
+                    uniqueId = baseId + '-' + suffix;
+                    suffix += 1;
+                }
+
+                idRegistry[uniqueId] = true;
+                heading.id = uniqueId;
+            }
+
+            var level = heading.tagName.toLowerCase().replace('h', '');
+            var item = document.createElement('li');
+            item.className = 'post-toc-item toc-level-' + level;
+
+            var link = document.createElement('a');
+            link.className = 'post-toc-link';
+            link.href = '#' + heading.id;
+            link.textContent = title;
+            link.setAttribute('data-toc-target', heading.id);
+
+            item.appendChild(link);
+            list.appendChild(item);
+        });
+
+        if (!list.children.length) {
+            return;
+        }
+
+        tocNav.appendChild(list);
+        tocContainer.hidden = false;
+
+        var links = tocNav.querySelectorAll('.post-toc-link');
+        if (!links.length) {
+            return;
+        }
+
+        function setActive(targetId) {
+            Array.prototype.forEach.call(links, function(link) {
+                link.classList.toggle('is-active', link.getAttribute('data-toc-target') === targetId);
+            });
+        }
+
+        Array.prototype.forEach.call(links, function(link) {
+            link.addEventListener('click', function() {
+                setActive(link.getAttribute('data-toc-target'));
+            });
+        });
+
+        setActive(links[0].getAttribute('data-toc-target'));
+
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        setActive(entry.target.id);
+                    }
+                });
+            }, {
+                rootMargin: '-25% 0px -60% 0px',
+                threshold: 0.05
+            });
+
+            headings.forEach(function(heading) {
+                observer.observe(heading);
+            });
+        } else {
+            window.addEventListener('scroll', function() {
+                var marker = window.scrollY + 120;
+                var activeId = '';
+
+                headings.forEach(function(heading) {
+                    if (heading.offsetTop <= marker) {
+                        activeId = heading.id;
+                    }
+                });
+
+                if (activeId) {
+                    setActive(activeId);
+                }
+            }, { passive: true });
+        }
+    }
+
+    function lumivraInitReadingProgress() {
+        var progressBar = document.querySelector('.scroll-progress');
+        if (!progressBar) {
+            return;
+        }
+
+        var article = document.querySelector('.single-post .entry-content');
+
+        function updateProgress() {
+            var percent = 0;
+
+            if (article) {
+                var headerOffset = 90;
+                var articleTop = window.scrollY + article.getBoundingClientRect().top - headerOffset;
+                var articleBottom = articleTop + article.offsetHeight;
+                var start = articleTop;
+                var end = articleBottom - window.innerHeight * 0.35;
+                var distance = end - start;
+
+                if (distance <= 0) {
+                    percent = window.scrollY >= articleBottom ? 100 : 0;
+                } else {
+                    percent = ((window.scrollY - start) / distance) * 100;
+                }
+            } else {
+                var maxScrollable = document.documentElement.scrollHeight - window.innerHeight;
+                if (maxScrollable > 0) {
+                    percent = (window.scrollY / maxScrollable) * 100;
+                }
+            }
+
+            percent = Math.min(100, Math.max(0, percent));
+            progressBar.style.width = Math.round(percent) + '%';
+        }
+
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        window.addEventListener('resize', updateProgress);
+        updateProgress();
+    }
+
     // 当文档加载完成
     $(document).ready(function() {
 
@@ -112,6 +280,12 @@
         // 主题模式切换（系统/深色/浅色）
         // ============================================
         lumivraInitThemeMode();
+
+        // ============================================
+        // 文章目录与阅读进度
+        // ============================================
+        lumivraInitPostToc();
+        lumivraInitReadingProgress();
         
         // ============================================
         // 移动端菜单切换
@@ -134,25 +308,6 @@
                 $('.menu-toggle').attr('aria-expanded', 'false');
             }
         });
-
-        // ============================================
-        // 阅读进度条
-        // ============================================
-        if ($('.scroll-progress').length) {
-            $(window).scroll(function() {
-                var scrollTop = $(window).scrollTop();
-                var docHeight = $(document).height();
-                var winHeight = $(window).height();
-                var scrollPercent = 0;
-
-                if (docHeight > winHeight) {
-                    scrollPercent = (scrollTop) / (docHeight - winHeight);
-                }
-
-                var scrollPercentRounded = Math.min(100, Math.max(0, Math.round(scrollPercent * 100)));
-                $('.scroll-progress').css('width', scrollPercentRounded + '%');
-            });
-        }
 
         // ============================================
         // 返回顶部按钮

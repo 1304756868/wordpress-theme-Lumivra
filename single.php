@@ -42,6 +42,11 @@ get_header();
                     </header>
 
                     <div class="entry-content">
+                        <aside id="post-toc" class="post-toc" hidden>
+                            <h2 class="post-toc-title"><?php _e('文章目录', 'lumivra'); ?></h2>
+                            <nav id="post-toc-nav" class="post-toc-nav" aria-label="<?php esc_attr_e('文章目录', 'lumivra'); ?>"></nav>
+                        </aside>
+
                         <?php
                         the_content();
 

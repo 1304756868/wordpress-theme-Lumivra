@@ -16,6 +16,10 @@
         font-size: 2.5rem;
     }
 
+    .post-toc {
+        margin-bottom: 1.5rem;
+    }
+
     .post-card {
         margin-bottom: 2rem;
     }
@@ -97,6 +101,18 @@
 
     .single-post .entry-title {
         font-size: 1.75rem;
+    }
+
+    .post-toc {
+        padding: 0.85rem 1rem;
+    }
+
+    .post-toc-item.toc-level-3 {
+        padding-left: 0.7rem;
+    }
+
+    .post-toc-link {
+        font-size: 0.92rem;
     }
 
     .entry-content {
