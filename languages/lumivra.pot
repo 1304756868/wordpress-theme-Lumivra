@@ -162,3 +162,21 @@ msgstr ""
 
 msgid "系统默认"
 msgstr ""
+
+msgid "复制"
+msgstr ""
+
+msgid "✓ 已复制"
+msgstr ""
+
+msgid "复制代码"
+msgstr ""
+
+msgid "复制代码到剪贴板"
+msgstr ""
+
+msgid "复制失败"
+msgstr ""
+
+msgid "[LaTeX Error]"
+msgstr ""

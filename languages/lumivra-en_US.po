@@ -164,3 +164,21 @@ msgstr "Font Family"
 
 msgid "系统默认"
 msgstr "System Default"
+
+msgid "复制"
+msgstr "Copy"
+
+msgid "✓ 已复制"
+msgstr "✓ Copied"
+
+msgid "复制代码"
+msgstr "Copy code"
+
+msgid "复制代码到剪贴板"
+msgstr "Copy code to clipboard"
+
+msgid "复制失败"
+msgstr "Copy failed"
+
+msgid "[LaTeX Error]"
+msgstr "[LaTeX Error]"
