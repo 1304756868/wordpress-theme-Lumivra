@@ -860,7 +860,8 @@ body.page .post-thumbnail {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
     overflow-wrap: break-word;   /* 标准属性 */
     max-width: 100%;             /* 防止溢出容器 */
-    overflow-x: hidden;          /* 既然换行了，就不需要横向滚动 */
+    overflow-x: auto;            /* 保留必要时的横向滚动 */
+    overflow-y: visible;         /* 避免复制按钮被裁切 */
     
     /* 基础样式，如果还没有定义的话 */
     background: var(--bg-secondary);
@@ -868,6 +869,7 @@ body.page .post-thumbnail {
     border-radius: var(--border-radius);
     margin-bottom: 2rem;
     color: var(--text-color);
+    position: relative;          /* 为复制按钮定位 */
 }
 
 .entry-content pre code,
@@ -877,6 +879,39 @@ body.page .post-thumbnail {
     overflow-wrap: break-word;
     background: transparent;     /* 避免双重背景 */
     padding: 0;
+}
+
+.code-copy-button {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+    z-index: 10;
+    font-family: var(--font-sans);
+    white-space: nowrap;
+    opacity: 0.88;
+    pointer-events: auto;
+}
+
+.code-copy-button:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+    transform: scale(1.02);
+}
+
+.code-copy-button:active {
+    transform: scale(0.98);
+}
+
+.code-copy-button.copied {
+    background-color: rgba(34, 197, 94, 0.8);
 }
 
 /* 图片灯箱（全屏覆盖） */

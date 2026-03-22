@@ -7,6 +7,13 @@
 (function($) {
     'use strict';
 
+    function lumivraI18n(key, fallback) {
+        if (typeof window.lumivra !== 'undefined' && window.lumivra.i18n && window.lumivra.i18n[key]) {
+            return window.lumivra.i18n[key];
+        }
+        return fallback;
+    }
+
     function lumivraGetSystemTheme() {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             return 'dark';
@@ -273,6 +280,101 @@
         updateProgress();
     }
 
+    function lumivraInitCodeCopyButton() {
+        // 获取所有代码块
+        var codeBlocks = document.querySelectorAll('.entry-content pre, .wp-block-code');
+        
+        codeBlocks.forEach(function(block) {
+            // 跳过已经有复制按钮的代码块
+            if (block.querySelector('.code-copy-button')) {
+                return;
+            }
+            
+            // 获取代码文本
+            var codeElement = block.querySelector('code') || block;
+            if (!codeElement) {
+                return;
+            }
+            
+            // 创建复制按钮
+            var button = document.createElement('button');
+            var copyLabel = lumivraI18n('copy', '复制');
+            var copiedLabel = lumivraI18n('copied', '✓ 已复制');
+            var copyFailedLabel = lumivraI18n('copyFailed', '复制失败');
+            button.className = 'code-copy-button';
+            button.setAttribute('type', 'button');
+            button.setAttribute('aria-label', lumivraI18n('copyCode', '复制代码'));
+            button.textContent = copyLabel;
+            button.title = lumivraI18n('copyCodeToClipboard', '复制代码到剪贴板');
+            
+            // 添加点击事件
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 获取代码文本
+                var code = codeElement.textContent || '';
+                // 如果直接使用容器节点，避免把按钮文案复制进去
+                if (codeElement === block) {
+                    code = code.replace(copyLabel, '').replace(copiedLabel, '').trim();
+                }
+                
+                // 复制到剪贴板
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(code).then(function() {
+                        // 显示复制成功的反馈
+                        button.classList.add('copied');
+                        button.disabled = true;
+                        button.textContent = copiedLabel;
+                        
+                        // 2 秒后恢复按钮状态
+                        setTimeout(function() {
+                            button.classList.remove('copied');
+                            button.disabled = false;
+                            button.textContent = copyLabel;
+                        }, 2000);
+                    }).catch(function(err) {
+                        console.error(copyFailedLabel, err);
+                        fallbackCopy(code, button);
+                    });
+                } else {
+                    // 浏览器不支持 Clipboard API，使用备用方案
+                    fallbackCopy(code, button);
+                }
+            });
+            
+            // 备用复制方案（用于旧浏览器）
+            function fallbackCopy(code, btn) {
+                var textarea = document.createElement('textarea');
+                textarea.value = code;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                
+                try {
+                    textarea.select();
+                    document.execCommand('copy');
+                    
+                    btn.classList.add('copied');
+                    btn.disabled = true;
+                    btn.textContent = copiedLabel;
+                    
+                    setTimeout(function() {
+                        btn.classList.remove('copied');
+                        btn.disabled = false;
+                        btn.textContent = copyLabel;
+                    }, 2000);
+                } catch (err) {
+                    console.error(copyFailedLabel, err);
+                }
+                
+                document.body.removeChild(textarea);
+            }
+            
+            // 将按钮添加到代码块
+            block.appendChild(button);
+        });
+    }
+
     // 当文档加载完成
     $(document).ready(function() {
 
@@ -286,6 +388,11 @@
         // ============================================
         lumivraInitPostToc();
         lumivraInitReadingProgress();
+        
+        // ============================================
+        // 代码块复制按钮
+        // ============================================
+        lumivraInitCodeCopyButton();
         
         // ============================================
         // 移动端菜单切换

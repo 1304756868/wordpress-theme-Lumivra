@@ -233,6 +233,13 @@ function lumivra_scripts() {
     // 将主题目录 URL 传给 JS，便于引用主题内资源（如加载占位图）
     wp_localize_script('lumivra-script', 'lumivra', array(
         'themeUrl' => get_template_directory_uri(),
+        'i18n' => array(
+            'copy' => __('复制', 'lumivra'),
+            'copied' => __('✓ 已复制', 'lumivra'),
+            'copyCode' => __('复制代码', 'lumivra'),
+            'copyCodeToClipboard' => __('复制代码到剪贴板', 'lumivra'),
+            'copyFailed' => __('复制失败', 'lumivra'),
+        ),
     ));
 
     // 评论回复脚本
@@ -898,7 +905,9 @@ add_action('wp_enqueue_scripts', 'lumivra_enqueue_latex_scripts');
  * 而是作为字符串被嵌入到页面中的 JavaScript
  */
 function lumivra_get_latex_init_script() {
-    return <<<'JS'
+    $latex_error_text = wp_json_encode(__('[LaTeX Error]', 'lumivra'));
+
+    return <<<JS
 function lumivra_init_latex_render() {
     document.addEventListener('DOMContentLoaded', function() {
         var latexElements = document.querySelectorAll('.latex-content');
@@ -925,7 +934,7 @@ function lumivra_init_latex_render() {
                 }
             } catch (e) {
                 // 如果 KaTeX 编译失败，显示错误信息
-                element.textContent = '[LaTeX Error]';
+                element.textContent = {$latex_error_text};
                 element.style.color = '#cc0000';
                 console.error('KaTeX render error:', e);
             }
