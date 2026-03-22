@@ -794,3 +794,163 @@ function lumivra_change_avatar_url($url) {
     return str_replace('secure.gravatar.com', 'cravatar.cn', $url);
 }
 add_filter('get_avatar_url', 'lumivra_change_avatar_url');
+
+/**
+ * LaTeX 公式渲染 - 短代码处理
+ * 
+ * 使用方法：
+ * - 行内公式：[latex]E = mc^2[/latex]
+ * - 显示模式：[latex]$$\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}$$[/latex]
+ * 
+ * @param array $atts 短代码属性
+ * @param string $content 短代码内容
+ * @return string HTML输出
+ */
+function lumivra_latex_shortcode($atts, $content = null) {
+    if (empty($content)) {
+        return '';
+    }
+
+    $content = trim($content);
+    
+    // 检测是否为显示模式（$$...$$）
+    $is_display_mode = false;
+    if (strpos($content, '$$') === 0 && strrpos($content, '$$') > 0) {
+        $is_display_mode = true;
+        // 移除最外层的 $$
+        $content = substr($content, 2, -2);
+    }
+    
+    // 转义内容以防止 XSS
+    $content = esc_html($content);
+    
+    // 返回带有特定类标记的元素，供 JavaScript 处理
+    if ($is_display_mode) {
+        return '<div class="latex-content latex-display" data-latex="' . esc_attr($content) . '"></div>';
+    } else {
+        return '<span class="latex-content latex-inline" data-latex="' . esc_attr($content) . '"></span>';
+    }
+}
+add_shortcode('latex', 'lumivra_latex_shortcode');
+
+/**
+ * 条件性加载 KaTeX 库
+ * 
+ * 仅在页面包含 [latex] 短代码时加载 KaTeX CSS 和 JS
+ * 这样避免了不必要的资源加载，提高性能
+ */
+function lumivra_enqueue_latex_scripts() {
+    // 获取当前页面内容
+    $post = get_queried_object();
+    
+    // 检查是否需要加载 KaTeX
+    $has_latex = false;
+    
+    // 检查主文章/页面内容
+    if (is_singular() && isset($post->post_content)) {
+        $has_latex = has_shortcode($post->post_content, 'latex');
+    }
+    
+    // 如果不需要 LaTeX，直接返回
+    if (!$has_latex) {
+        return;
+    }
+    
+    // KaTeX 版本（使用 jsDelivr CDN）
+    $katex_version = 'latest';
+    $katex_cdn = 'https://cdn.jsdelivr.net/npm/katex@' . $katex_version;
+    
+    // 加载 KaTeX CSS
+    wp_enqueue_style(
+        'katex-css',
+        $katex_cdn . '/dist/katex.min.css',
+        array(),
+        $katex_version
+    );
+    
+    // 加载 KaTeX JS
+    wp_enqueue_script(
+        'katex-js',
+        $katex_cdn . '/dist/katex.min.js',
+        array(),
+        $katex_version,
+        true
+    );
+    
+    // 加载 KaTeX 自动渲染扩展（对于数学模式标记）
+    wp_enqueue_script(
+        'katex-auto-render',
+        $katex_cdn . '/dist/contrib/auto-render.min.js',
+        array('katex-js'),
+        $katex_version,
+        true
+    );
+    
+    // 添加内联脚本来初始化 KaTeX 渲染
+    wp_add_inline_script('katex-auto-render', 'lumivra_init_latex_render()');
+}
+add_action('wp_enqueue_scripts', 'lumivra_enqueue_latex_scripts');
+
+/**
+ * KaTeX 初始化脚本（通过 wp_add_inline_script 嵌入）
+ * 
+ * 这个函数定义在 wp_add_inline_script 中，不是直接被调用的函数，
+ * 而是作为字符串被嵌入到页面中的 JavaScript
+ */
+function lumivra_get_latex_init_script() {
+    return <<<'JS'
+function lumivra_init_latex_render() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var latexElements = document.querySelectorAll('.latex-content');
+        
+        latexElements.forEach(function(element) {
+            var latex = element.getAttribute('data-latex');
+            if (!latex) return;
+            
+            try {
+                if (element.classList.contains('latex-display')) {
+                    // 显示模式
+                    katex.render(latex, element, {
+                        displayMode: true,
+                        throwOnError: false,
+                        errorColor: '#cc0000'
+                    });
+                } else {
+                    // 行内模式
+                    katex.render(latex, element, {
+                        displayMode: false,
+                        throwOnError: false,
+                        errorColor: '#cc0000'
+                    });
+                }
+            } catch (e) {
+                // 如果 KaTeX 编译失败，显示错误信息
+                element.textContent = '[LaTeX Error]';
+                element.style.color = '#cc0000';
+                console.error('KaTeX render error:', e);
+            }
+        });
+    });
+}
+lumivra_init_latex_render();
+JS;
+}
+
+// 获取初始化脚本并在 wp_footer 中输出
+function lumivra_output_latex_init_script() {
+    // 检查是否需要 LaTeX（同上面的检查）
+    $post = get_queried_object();
+    
+    $has_latex = false;
+    if (is_singular() && isset($post->post_content)) {
+        $has_latex = has_shortcode($post->post_content, 'latex');
+    }
+    
+    if (!$has_latex) {
+        return;
+    }
+    
+    // 输出初始化脚本
+    echo '<script>' . lumivra_get_latex_init_script() . '</script>';
+}
+add_action('wp_footer', 'lumivra_output_latex_init_script');
