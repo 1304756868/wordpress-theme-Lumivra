@@ -571,6 +571,33 @@ get_footer();
 [github]ty-yqs/wordpress-theme-Lumivra[/github]
 ```
 
+#### LaTeX 公式
+
+用于在文章和页面中渲染数学公式。
+
+行内公式示例：
+
+```txt
+[latex]E = mc^2[/latex]
+```
+
+显示模式示例（使用 `$$...$$` 包裹）：
+
+```txt
+[latex]$$\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}$$[/latex]
+```
+
+更多示例：
+
+```txt
+[latex]$$\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}$$[/latex]
+```
+
+说明：
+- 公式渲染基于 KaTeX。
+- 仅在页面包含 `[latex]` 短代码时按需加载相关资源，以减少不必要的性能开销。
+- 若公式语法有误，前端会显示错误提示，便于排查。
+
 ---
 
 ## 常见问题解答
